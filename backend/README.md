@@ -22,6 +22,10 @@ cd qxote-input-app-V2
 
 ### 📦 Install packages
 
+Run the `install-packages.sh` script if you have Docker running
+
+Or alternatively install the packages using your host machine
+
 ```bash
 npm install
 composer install
@@ -58,8 +62,6 @@ _Using `-d` runs Sail in detached mode so your terminal remains free._
 ```bash
 ./vendor/bin/sail npm run dev
 ```
-
----
 
 ### ⛔ Stop Sail (when you're done working)
 

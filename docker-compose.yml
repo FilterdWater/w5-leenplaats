@@ -1,0 +1,8 @@
+# docker-compose.yml (root)
+include:
+  - backend/docker-compose.yml
+  - frontend/docker-compose.yml
+
+networks:
+  app-network:
+    driver: bridge
