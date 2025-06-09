@@ -2,31 +2,13 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import "@/css/app.css";
-import App from "./app.tsx";
+import { NotFound } from "@/js/pages/NotFound.tsx";
+import { App } from "@/js/pages/app.tsx";
+import { Index } from "@/js/pages/index.tsx";
+import { Login } from "@/js/pages/auth/login.tsx";
+import { SignUp } from "@/js/pages/auth/sign-up";
 
-// Create some example components for routing
-const Home = () => (
-  <div>
-    <h1 className="text-2xl font-bold mb-4">Welcome Home!</h1>
-    <p>This is the home page content.</p>
-  </div>
-);
-
-const About = () => (
-  <div>
-    <h1 className="text-2xl font-bold mb-4">About Us</h1>
-    <p>This is the about page content.</p>
-  </div>
-);
-
-const NotFound = () => (
-  <div>
-    <h1 className="text-2xl font-bold mb-4">404 - Page Not Found</h1>
-    <p>The page you're looking for doesn't exist.</p>
-  </div>
-);
-
-// Enhanced router configuration with nested routes
+// Configuration with nested routes
 const router = createBrowserRouter([
   {
     path: "/",
@@ -35,11 +17,15 @@ const router = createBrowserRouter([
     children: [
       {
         index: true, // This makes it the default route for "/"
-        element: <Home />,
+        element: <Index />,
       },
       {
-        path: "about",
-        element: <About />,
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "sign-up",
+        element: <SignUp />,
       },
     ],
   },
