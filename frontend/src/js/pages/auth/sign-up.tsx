@@ -18,8 +18,12 @@ import { AuthLayout } from "@/js/layouts/auth-layout";
 
 const signUpSchema = z
   .object({
-    name: z.string().min(1, "Name is required"),
+    first_name: z.string().min(1, "First name is required"),
+    last_name: z.string().min(1, "Last name is required"),
     email: z.string().email("Please enter a valid email address"),
+    address: z.string().min(1, "Please enter a valid address"),
+    zip_code: z.string().min(1, "Please enter a valid zip code"),
+    city: z.string().min(1, "Please enter a valid city"),
     password: z.string().min(6, "Password must be at least 6 characters"),
     password_confirmation: z.string().min(6, "Please confirm your password"),
   })
@@ -37,10 +41,13 @@ export function SignUp() {
   const form = useForm<SignUpForm>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      password_confirmation: "",
+        first_name: "",
+        last_name: "",
+        address: "",
+        zip_code: "",
+        city: "",
+        email: "",
+        password: "",
     },
   });
 
@@ -48,7 +55,7 @@ export function SignUp() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/sign-up", {
+      const response = await fetch("http://localhost:80/api/sign-up", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -104,14 +111,94 @@ export function SignUp() {
           <div className="grid gap-6">
             <FormField
               control={form.control}
-              name="name"
+              name="first_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>First Name</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Name"
                       autoComplete="name"
+                      autoFocus
+                      tabIndex={1}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="last_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Last name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Name"
+                      autoComplete="name"
+                      autoFocus
+                      tabIndex={1}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Address</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="address"
+                      autoComplete="address"
+                      autoFocus
+                      tabIndex={1}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="zip_code"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Zip Code</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="zip_code"
+                      autoComplete="zip_code"
+                      autoFocus
+                      tabIndex={1}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Address</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="city"
+                      autoComplete="city"
                       autoFocus
                       tabIndex={1}
                       {...field}
