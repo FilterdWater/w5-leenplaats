@@ -41,13 +41,13 @@ export function SignUp() {
   const form = useForm<SignUpForm>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-        first_name: "",
-        last_name: "",
-        address: "",
-        zip_code: "",
-        city: "",
-        email: "",
-        password: "",
+      first_name: "",
+      last_name: "",
+      address: "",
+      zip_code: "",
+      city: "",
+      email: "",
+      password: "",
     },
   });
 
@@ -71,7 +71,7 @@ export function SignUp() {
           localStorage.setItem("auth_token", data.token);
         }
 
-        navigate("/home");
+        navigate("/");
       } else {
         const errorData = await response.json();
 
@@ -117,8 +117,8 @@ export function SignUp() {
                   <FormLabel>First Name</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Name"
-                      autoComplete="name"
+                      placeholder="Enter your first name"
+                      autoComplete="given-name"
                       autoFocus
                       tabIndex={1}
                       {...field}
@@ -137,10 +137,9 @@ export function SignUp() {
                   <FormLabel>Last name</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Name"
-                      autoComplete="name"
-                      autoFocus
-                      tabIndex={1}
+                      placeholder="Enter your last name"
+                      autoComplete="family-name"
+                      tabIndex={2}
                       {...field}
                     />
                   </FormControl>
@@ -157,10 +156,9 @@ export function SignUp() {
                   <FormLabel>Address</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="address"
-                      autoComplete="address"
-                      autoFocus
-                      tabIndex={1}
+                      placeholder="123 Main Street"
+                      autoComplete="street-address"
+                      tabIndex={3}
                       {...field}
                     />
                   </FormControl>
@@ -177,10 +175,9 @@ export function SignUp() {
                   <FormLabel>Zip Code</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="zip_code"
-                      autoComplete="zip_code"
-                      autoFocus
-                      tabIndex={1}
+                      placeholder="12345"
+                      autoComplete="postal-code"
+                      tabIndex={4}
                       {...field}
                     />
                   </FormControl>
@@ -194,13 +191,12 @@ export function SignUp() {
               name="city"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Address</FormLabel>
+                  <FormLabel>City</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="city"
-                      autoComplete="city"
-                      autoFocus
-                      tabIndex={1}
+                      placeholder="Enter your city"
+                      autoComplete="address-level2"
+                      tabIndex={5}
                       {...field}
                     />
                   </FormControl>
@@ -218,9 +214,9 @@ export function SignUp() {
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="email@example.com"
+                      placeholder="you@example.com"
                       autoComplete="email"
-                      tabIndex={2}
+                      tabIndex={6}
                       {...field}
                     />
                   </FormControl>
@@ -238,9 +234,9 @@ export function SignUp() {
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="Password"
+                      placeholder="Create a secure password"
                       autoComplete="new-password"
-                      tabIndex={3}
+                      tabIndex={7}
                       {...field}
                     />
                   </FormControl>
@@ -258,9 +254,9 @@ export function SignUp() {
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="Confirm password"
+                      placeholder="Re-enter your password"
                       autoComplete="new-password"
-                      tabIndex={4}
+                      tabIndex={8}
                       {...field}
                     />
                   </FormControl>
@@ -275,7 +271,7 @@ export function SignUp() {
               </div>
             )}
 
-            <Button type="submit" disabled={isLoading} tabIndex={5}>
+            <Button type="submit" disabled={isLoading} tabIndex={9}>
               {isLoading && (
                 <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
               )}
@@ -288,7 +284,7 @@ export function SignUp() {
             <Link
               to="/login"
               className="text-primary hover:underline"
-              tabIndex={6}
+              tabIndex={10}
             >
               Log in
             </Link>

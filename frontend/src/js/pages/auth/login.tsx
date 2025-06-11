@@ -119,7 +119,7 @@ export function Login({ status, canResetPassword = true }: LoginProps) {
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="email@example.com"
+                      placeholder="you@example.com"
                       autoComplete="email"
                       autoFocus
                       tabIndex={1}
@@ -151,7 +151,7 @@ export function Login({ status, canResetPassword = true }: LoginProps) {
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="Password"
+                      placeholder="Enter your password"
                       autoComplete="current-password"
                       tabIndex={2}
                       {...field}
@@ -200,7 +200,7 @@ export function Login({ status, canResetPassword = true }: LoginProps) {
             <Link
               to="/sign-up"
               className="text-primary hover:underline"
-              tabIndex={5}
+              tabIndex={6}
             >
               Sign up
             </Link>
