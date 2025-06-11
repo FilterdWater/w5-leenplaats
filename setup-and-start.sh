@@ -128,8 +128,7 @@ if [ "$FRONTEND_NOT_SETUP" = true ]; then
         if ! docker run --rm \
             -v "$PWD":/app \
             -w /app \
-            --user "$(id -u):$(id -g)" \
-            node npm install; then
+            node sh -c "npm install && chown -R $(id -u):$(id -g) node_modules package-lock.json"; then
             echo "ERROR: npm install failed"
             exit 1
         fi
@@ -201,8 +200,7 @@ if [ "$BACKEND_NOT_SETUP" = true ]; then
         if ! docker run --rm \
             -v "$PWD":/app \
             -w /app \
-            --user "$(id -u):$(id -g)" \
-            node npm install; then
+            node sh -c "npm install && chown -R $(id -u):$(id -g) node_modules package-lock.json"; then
             echo "ERROR: npm install failed"
             exit 1
         fi
