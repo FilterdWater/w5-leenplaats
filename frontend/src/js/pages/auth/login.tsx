@@ -48,7 +48,7 @@ export function Login({ status, canResetPassword = true }: LoginProps) {
 
     try {
       // Replace this with your actual login API call
-      const response = await fetch("/api/login", {
+      const response = await fetch("http://localhost:80/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,11 +66,11 @@ export function Login({ status, canResetPassword = true }: LoginProps) {
 
         // Store auth token if needed
         if (data.token) {
-          localStorage.setItem("auth_token", data.token);
+          localStorage.setItem("token", data.token);
         }
 
         // Navigate to home or intended route
-        navigate("/home");
+        navigate("/");
       } else {
         // Handle login errors
         const errorData = await response.json();
