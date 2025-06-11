@@ -20,6 +20,14 @@ const initialState: ThemeProviderState = {
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
+// Helper function to update favicon based on theme
+const updateFavicon = (isDark: boolean) => {
+  const favicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
+  if (favicon) {
+    favicon.href = isDark ? "/favicon-dark.svg" : "/favicon-light.svg";
+  }
+};
+
 export function ThemeProvider({
   children,
   defaultTheme = "system",
@@ -42,11 +50,26 @@ export function ThemeProvider({
         : "light";
 
       root.classList.add(systemTheme);
-      return;
+    } else {
+      root.classList.add(theme);
     }
-
-    root.classList.add(theme);
   }, [theme]);
+
+  // Effect for favicon to change based on browser theme
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+    // Set initial favicon based on system theme
+    updateFavicon(mediaQuery.matches);
+
+    const handleChange = (e: MediaQueryListEvent) => {
+      updateFavicon(e.matches);
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []); // Empty dependency array - this effect runs once on mount
 
   const value = {
     theme,
