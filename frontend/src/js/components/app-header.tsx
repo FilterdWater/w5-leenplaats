@@ -1,4 +1,4 @@
-import { AppearanceToggleTab } from "@/js/components/appearance-tabs";
+import { AppearanceTabs } from "@/js/components/appearance-tabs";
 import { Breadcrumbs } from "@/js/components/breadcrumbs";
 import { Icon } from "@/js/components/icon";
 import { Avatar, AvatarFallback, AvatarImage } from "@/js/components/ui/avatar";
@@ -195,7 +195,7 @@ export function AppHeader({ breadcrumbs = [], auth }: AppHeaderProps) {
                       </Button>
                     </div>
                     <div className="flex justify-end">
-                      <AppearanceToggleTab />
+                      <AppearanceTabs />
                     </div>
                   </div>
                 </DialogContent>

@@ -27,10 +27,9 @@ type LoginForm = z.infer<typeof loginSchema>;
 
 interface LoginProps {
   status?: string;
-  canResetPassword?: boolean;
 }
 
-export function Login({ status, canResetPassword = true }: LoginProps) {
+export function Login({ status }: LoginProps) {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -138,15 +137,6 @@ export function Login({ status, canResetPassword = true }: LoginProps) {
                 <FormItem>
                   <div className="flex items-center">
                     <FormLabel>Password</FormLabel>
-                    {canResetPassword && (
-                      <Link
-                        to="/forgot-password"
-                        className="ml-auto text-sm text-primary hover:underline"
-                        tabIndex={5}
-                      >
-                        Forgot password?
-                      </Link>
-                    )}
                   </div>
                   <FormControl>
                     <Input

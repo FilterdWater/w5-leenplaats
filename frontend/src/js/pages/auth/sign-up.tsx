@@ -71,7 +71,7 @@ export function SignUp() {
           localStorage.setItem("auth_token", data.token);
         }
 
-        navigate("/");
+        navigate("/login");
       } else {
         const errorData = await response.json();
 

@@ -7,6 +7,9 @@ import { App } from "@/js/pages/app.tsx";
 import { Index } from "@/js/pages/index.tsx";
 import { Login } from "@/js/pages/auth/login.tsx";
 import { SignUp } from "@/js/pages/auth/sign-up";
+import { Profile } from "@/js/pages/settings/profile";
+import { Password } from "@/js/pages/settings/password";
+import { Appearance } from "@/js/pages/settings/appearance";
 
 // Configuration with nested routes
 const router = createBrowserRouter([
@@ -26,6 +29,18 @@ const router = createBrowserRouter([
       {
         path: "sign-up",
         element: <SignUp />,
+      },
+      {
+        path: "/settings/profile",
+        element: <Profile />,
+      },
+      {
+        path: "/settings/password",
+        element: <Password />,
+      },
+      {
+        path: "/settings/appearance",
+        element: <Appearance />,
       },
     ],
   },
