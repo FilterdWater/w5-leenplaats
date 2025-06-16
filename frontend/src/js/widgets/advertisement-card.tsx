@@ -8,21 +8,25 @@ import {
   CardHeader,
   CardTitle,
 } from "@/js/components/ui/card";
-import { Avatar, AvatarFallback } from "@/js/components/ui/avatar";
-import { Bookmark, UserRound } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/js/components/ui/avatar";
+import { Bookmark } from "lucide-react";
 import { Badge } from "@/js/components/ui/badge";
 import type { Advertisement } from "../models/advertisement";
+import type { User } from "../models/user";
 
 type AdvertisementCardProps = {
   advertisement: Advertisement;
+  user: User;
   onBookmark?: () => void;
 };
 
 export function AdvertisementCard({
   advertisement,
+  user,
   onBookmark,
 }: AdvertisementCardProps) {
-  const { imageUrl, title, description, categories } = advertisement;
+  const { imageUrl, title, description, categories, price } = advertisement;
+  const { firstName, lastName, profilePicture } = user;
   return (
     <Card className="w-full max-w-sm rounded-2xl shadow-md p-0 gap-0 z-0 overflow-hidden">
       <CardHeader className="p-0 gap-0">
@@ -58,16 +62,19 @@ export function AdvertisementCard({
       </CardContent>
 
       <CardFooter className="flex items-center gap-3 px-4 py-4 z-10 bg-zinc-50">
-        <Avatar className="w-8 h-8">
-          <AvatarFallback className="bg-neutral-200 dark:bg-neutral-700">
-            <UserRound className="w-4 h-4" />
-          </AvatarFallback>
+        <Avatar>
+          <AvatarImage src={profilePicture} alt="Profile Picture" />
+          <AvatarFallback>CN</AvatarFallback>
         </Avatar>
         <div className="flex justify-between items-start w-full">
           <div>
-            <p className="font-semibold">Gepost door Jan Jansen</p>
+            <p className="font-semibold">
+              Gepost door {firstName} {lastName}
+            </p>
           </div>
-          <p className="text-green-600 font-semibold text-base">€ 39,99/ Dag</p>
+          <p className="text-green-600 font-semibold text-base">
+            € {price}/ Dag
+          </p>
         </div>
       </CardFooter>
     </Card>
