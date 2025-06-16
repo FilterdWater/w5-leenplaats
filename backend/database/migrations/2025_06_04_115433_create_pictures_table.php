@@ -17,8 +17,8 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('advertisment_has_pictures', function (Blueprint $table) {
-            $table->foreignId('advertisment_id')->constrained()->onDelete('cascade');
+        Schema::create('advertisement_has_pictures', function (Blueprint $table) {
+            $table->foreignId('advertisement_id')->constrained()->onDelete('cascade');
             $table->foreignId('picture_id')->constrained()->onDelete('cascade');
         });
     }
