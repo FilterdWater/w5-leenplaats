@@ -1,16 +1,14 @@
+import { useDocumentTitle } from "@/js/hooks/use-document-title";
 import { AppLayout } from "@/js/layouts/app-layout";
 import {
-  // Share2,
   Search,
-  Shield,
   Smartphone,
-  // Recycle,
-  // MapPin,
   Camera,
   Bell,
   List,
   Users,
   Leaf,
+  NotebookPen,
 } from "lucide-react";
 import { Button } from "@/js/components/ui/button";
 import {
@@ -33,6 +31,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export function Index() {
+  useDocumentTitle("Home", "Home page");
+
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <div className="p-4 divide-y">
@@ -73,7 +73,7 @@ export function Index() {
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground flex-shrink-0">
                     <Camera className="h-6 w-6" />
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 space-y-1 items-center justify-center">
                     <CardTitle>Adverteren</CardTitle>
                     <CardDescription>
                       Je spullen online beschikbaar maken is makkelijk en
@@ -90,7 +90,7 @@ export function Index() {
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground flex-shrink-0">
                     <Search className="h-6 w-6" />
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 space-y-1 items-center justify-center">
                     <CardTitle>Zoekfunctionaliteit</CardTitle>
                     <CardDescription>
                       Zoek, filter en sorteer om snel te vinden wat je nodig
@@ -105,9 +105,9 @@ export function Index() {
               <CardContent>
                 <div className="flex flex-col md:flex-row md:items-center md:space-x-4 space-y-4 md:space-y-0">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground flex-shrink-0">
-                    <Shield className="h-6 w-6" />
+                    <NotebookPen className="h-6 w-6" />
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 space-y-1 items-center justify-center">
                     <CardTitle>Reserveren</CardTitle>
                     <CardDescription>
                       Een reserveringssysteem om items eenvoudig te lenen en
@@ -124,7 +124,7 @@ export function Index() {
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground flex-shrink-0">
                     <Bell className="h-6 w-6" />
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 space-y-1 items-center justify-center">
                     <CardTitle>Notificaties</CardTitle>
                     <CardDescription>
                       Krijg meldingen wanneer er belangrijke dingen gebeuren
@@ -179,7 +179,7 @@ export function Index() {
               </div>
 
               {/* Platform Logos Grid */}
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* iOS/Safari */}
                 <Card className="p-8 flex flex-col items-center justify-center space-y-4 hover:shadow-lg transition-all duration-300">
                   <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center">
@@ -510,6 +510,36 @@ export function Index() {
               <p className="text-sm text-muted-foreground">
                 &copy; 2025 Leenplaats
               </p>
+              <div className="text-sm text-muted-foreground flex flex-col lg:flex-row gap-1">
+                <span>Een school project gemaakt door</span>
+                <div className="flex gap-1">
+                  <span>|</span>
+                  <a
+                    href="https://github.com/FilterdWater"
+                    target="_blank"
+                    className="hover:underline"
+                  >
+                    FilterdWater
+                  </a>
+                  <span>|</span>
+                  <a
+                    href="https://github.com/Nacuy"
+                    target="_blank"
+                    className="hover:underline"
+                  >
+                    Nacuy
+                  </a>
+                  <span>|</span>
+                  <a
+                    href="https://github.com/Deruach"
+                    target="_blank"
+                    className="hover:underline"
+                  >
+                    Deruach
+                  </a>
+                  <span>|</span>
+                </div>
+              </div>
             </div>
           </div>
         </footer>
