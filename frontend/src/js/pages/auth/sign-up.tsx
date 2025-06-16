@@ -109,7 +109,7 @@ export function SignUp() {
           localStorage.setItem("auth_token", data.token);
         }
 
-        navigate("/home");
+        navigate("/login");
       } else {
         const errorData = await response.json();
         if (errorData.errors) {
@@ -153,7 +153,13 @@ export function SignUp() {
                 <FormItem>
                   <FormLabel>First Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Name" autoComplete="name" {...field} />
+                    <Input
+                      placeholder="Enter your first name"
+                      autoComplete="given-name"
+                      autoFocus
+                      tabIndex={1}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -168,6 +174,12 @@ export function SignUp() {
                   <FormLabel>Last name</FormLabel>
                   <FormControl>
                     <Input placeholder="Name" autoComplete="family-name" {...field} />
+                    <Input
+                      placeholder="Enter your last name"
+                      autoComplete="family-name"
+                      tabIndex={2}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -182,7 +194,12 @@ export function SignUp() {
                 <FormItem>
                   <FormLabel>Zip Code</FormLabel>
                   <FormControl>
-                    <Input placeholder="Zip Code" autoComplete="postal-code" {...field} />
+                    <Input
+                      placeholder="123 Main Street"
+                      autoComplete="street-address"
+                      tabIndex={3}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -196,7 +213,12 @@ export function SignUp() {
                 <FormItem>
                   <FormLabel>House Number</FormLabel>
                   <FormControl>
-                    <Input placeholder="House Number" {...field} />
+                    <Input
+                      placeholder="12345"
+                      autoComplete="postal-code"
+                      tabIndex={4}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -208,23 +230,14 @@ export function SignUp() {
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Address</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Address" disabled {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="city"
-              render={({ field }) => (
-                <FormItem>
                   <FormLabel>City</FormLabel>
                   <FormControl>
-                    <Input placeholder="City" disabled {...field} />
+                    <Input
+                      placeholder="Enter your city"
+                      autoComplete="address-level2"
+                      tabIndex={5}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -240,8 +253,9 @@ export function SignUp() {
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="email@example.com"
+                      placeholder="you@example.com"
                       autoComplete="email"
+                      tabIndex={6}
                       {...field}
                     />
                   </FormControl>
@@ -259,8 +273,9 @@ export function SignUp() {
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="Password"
+                      placeholder="Create a secure password"
                       autoComplete="new-password"
+                      tabIndex={7}
                       {...field}
                     />
                   </FormControl>
@@ -278,8 +293,9 @@ export function SignUp() {
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="Confirm password"
+                      placeholder="Re-enter your password"
                       autoComplete="new-password"
+                      tabIndex={8}
                       {...field}
                     />
                   </FormControl>
@@ -293,16 +309,21 @@ export function SignUp() {
                 {form.formState.errors.root.message}
               </div>
             )}
-
-            <Button type="submit" disabled={isLoading}>
-              {isLoading && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+            <Button type="submit" disabled={isLoading} tabIndex={9}>
+              {isLoading && (
+                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+              )}
               Create account
             </Button>
           </div>
 
           <div className="text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link to="/login" className="text-primary hover:underline">
+            <Link
+              to="/login"
+              className="text-primary hover:underline"
+              tabIndex={10}
+            >
               Log in
             </Link>
           </div>

@@ -128,8 +128,7 @@ if [ "$FRONTEND_NOT_SETUP" = true ]; then
         if ! docker run --rm \
             -v "$PWD":/app \
             -w /app \
-            --user "$(id -u):$(id -g)" \
-            node npm install; then
+            node sh -c "npm install && chown -R $(id -u):$(id -g) node_modules package-lock.json"; then
             echo "ERROR: npm install failed"
             exit 1
         fi
@@ -201,8 +200,7 @@ if [ "$BACKEND_NOT_SETUP" = true ]; then
         if ! docker run --rm \
             -v "$PWD":/app \
             -w /app \
-            --user "$(id -u):$(id -g)" \
-            node npm install; then
+            node sh -c "npm install && chown -R $(id -u):$(id -g) node_modules package-lock.json"; then
             echo "ERROR: npm install failed"
             exit 1
         fi
@@ -258,22 +256,22 @@ else
     fi
 fi
 
-# Check if services are responding
+# List service ports
 echo ""
 echo ""
 echo ""
-echo "=== Checking if services are responding ==="
+echo "=== Service ports ==="
 echo ""
 echo "Frontend should be available at: http://localhost:5173"
 echo "Backend should be available at: http://localhost:80"
 echo "PHPMyAdmin should be available at: http://localhost:8080"
 echo ""
-if command -v curl >/dev/null 2>&1; then
-    sleep 3
-    curl -s http://localhost:5173 >/dev/null && echo "✓ Frontend is responding" || echo "✗ Frontend not responding"
-    curl -s http://localhost:80 >/dev/null && echo "✓ Backend is responding" || echo "✗ Backend not responding"
-    curl -s http://localhost:8080 >/dev/null && echo "✓ PHPMyAdmin is responding" || echo "✗ PHPMyAdmin not responding"
-fi
+# if command -v curl >/dev/null 2>&1; then
+#     sleep 3
+#     curl -s http://localhost:5173 >/dev/null && echo "✓ Frontend is responding" || echo "✗ Frontend not responding yet give it a moment"
+#     curl -s http://localhost:80 >/dev/null && echo "✓ Backend is responding" || echo "✗ Backend not responding yet give it a moment"
+#     curl -s http://localhost:8080 >/dev/null && echo "✓ PHPMyAdmin is responding" || echo "✗ PHPMyAdmin not responding yet give it a moment"
+# fi
 
 echo ""
 echo "=== Script Has Finished ==="

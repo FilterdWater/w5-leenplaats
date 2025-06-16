@@ -26,7 +26,16 @@ Before you begin, ensure you have the following installed on your system
    ./setup-and-start.sh
    ```
 
-3. **Start working!**
+3. **Run some Sail commands**
+
+   1. ```bash
+      ./backend/vendor/bin/sail artisan key:generate
+      ```
+   2. ```
+      ./backend/vendor/bin/sail artisan migrate
+      ```
+
+4. **Start working!**
 
 ### Managing the Environment
 

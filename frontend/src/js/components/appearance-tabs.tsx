@@ -5,7 +5,7 @@ import { useTheme } from "@/js/components/theme-provider";
 
 type Theme = "dark" | "light" | "system";
 
-export function AppearanceToggleTab({
+export function AppearanceTabs({
   className = "",
   ...props
 }: HTMLAttributes<HTMLDivElement>) {
