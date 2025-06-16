@@ -16,7 +16,7 @@ import { useIsMobile } from "@/js/hooks/use-mobile";
 import { useSharedData } from "@/js/components/app-shell";
 import { ChevronsUpDown, UserRound } from "lucide-react";
 import { Link } from "react-router";
-import { useUser } from "../context/UserContext";
+import { useUser } from "@/js/context/UserContext";
 
 export function NavUser() {
   const sharedData = useSharedData();
@@ -24,7 +24,7 @@ export function NavUser() {
   const { state } = useSidebar();
   const isMobile = useIsMobile();
   const { user } = useUser();
-  
+
   console.log(user);
 
   // If no user is authenticated, show a guest state

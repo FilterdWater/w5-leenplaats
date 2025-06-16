@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,6 +19,7 @@ import { HeadingSmall } from "@/js/components/heading-small";
 import { DeleteUser } from "@/js/components/delete-user";
 import { type BreadcrumbItem } from "@/js/types/app-layout";
 import { useDocumentTitle } from "@/js/hooks/use-document-title";
+import { useUser } from "@/js/context/UserContext";
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -29,8 +30,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 // Define the form schema using Zod
 const profileFormSchema = z.object({
-  name: z.string().min(1, {
-    message: "Name is required.",
+  first_name: z.string().min(1, {
+    message: "First name is required.",
+  }),
+  last_name: z.string().min(1, {
+    message: "Last name is required.",
   }),
   email: z.string().email({
     message: "Please enter a valid email address.",
@@ -43,19 +47,29 @@ export function Profile() {
   const [isLoading, setIsLoading] = useState(false);
   const [recentlySuccessful, setRecentlySuccessful] = useState(false);
 
-  const [user, setUser] = useState({
-    name: "John Doe", // Replace with actual user data
-    email: "john@example.com", // Replace with actual user data
-  });
+  // Use the UserContext
+  const { user, setUser, isLoading: userLoading } = useUser();
 
   // Initialize the form with react-hook-form and Zod validation
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      name: user.name,
-      email: user.email,
+      first_name: "",
+      last_name: "",
+      email: "",
     },
   });
+
+  // Update form values when user data is loaded
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        first_name: user.first_name || "",
+        last_name: user.last_name || "",
+        email: user.email || "",
+      });
+    }
+  }, [user, form]);
 
   // Handle form submission
   async function onSubmit(values: ProfileFormValues) {
@@ -72,7 +86,8 @@ export function Profile() {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
-          name: values.name,
+          first_name: values.first_name,
+          last_name: values.last_name,
           email: values.email,
         }),
       });
@@ -96,7 +111,7 @@ export function Profile() {
 
       const updatedUser = await response.json();
 
-      // Update local user state (in a real app, update your auth context/store)
+      // Update the user context with the new data
       setUser({ ...user, ...updatedUser });
       setRecentlySuccessful(true);
 
@@ -119,6 +134,46 @@ export function Profile() {
 
   useDocumentTitle("Profile Settings", "Update your name and email address");
 
+  // Show loading state while user data is being fetched
+  if (userLoading) {
+    return (
+      <AppLayout breadcrumbs={breadcrumbs}>
+        <SettingsLayout>
+          <div className="space-y-6">
+            <HeadingSmall
+              title="Profile information"
+              description="Update your name and email address"
+            />
+            <div className="flex items-center justify-center py-8">
+              <div className="text-sm text-gray-500">Loading...</div>
+            </div>
+          </div>
+        </SettingsLayout>
+      </AppLayout>
+    );
+  }
+
+  // Show message if no user is logged in
+  if (!user) {
+    return (
+      <AppLayout breadcrumbs={breadcrumbs}>
+        <SettingsLayout>
+          <div className="space-y-6">
+            <HeadingSmall
+              title="Profile information"
+              description="Update your name and email address"
+            />
+            <div className="flex items-center justify-center py-8">
+              <div className="text-sm text-gray-500">
+                Please log in to view your profile.
+              </div>
+            </div>
+          </div>
+        </SettingsLayout>
+      </AppLayout>
+    );
+  }
+
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <SettingsLayout>
@@ -132,14 +187,32 @@ export function Profile() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
-                name="name"
+                name="first_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>First Name</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Full name"
-                        autoComplete="name"
+                        placeholder="First name"
+                        autoComplete="given-name"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="last_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Last name"
+                        autoComplete="family-name"
                         {...field}
                       />
                     </FormControl>

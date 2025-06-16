@@ -32,15 +32,12 @@ import {
 import { UserMenuContent } from "@/js/components/user-menu-content";
 import { useInitials } from "@/js/hooks/use-initials";
 import { cn } from "@/js/lib/utils";
-import {
-  type BreadcrumbItem,
-  type NavItem,
-  type User,
-} from "@/js/types/app-layout";
+import { type BreadcrumbItem, type NavItem } from "@/js/types/app-layout";
 import { Link, useLocation } from "react-router";
-import { Home, Menu, UserRound } from "lucide-react";
+import { Home, Menu, UserRound, LoaderCircle } from "lucide-react";
 import { AppLogo } from "./app-logo";
 import { AppLogoIcon } from "./app-logo-icon";
+import { useUser } from "@/js/context/UserContext";
 
 const mainNavItems: NavItem[] = [
   {
@@ -55,14 +52,28 @@ const activeItemStyles =
 
 interface AppHeaderProps {
   breadcrumbs?: BreadcrumbItem[];
-  auth?: {
-    user?: User;
-  };
 }
 
-export function AppHeader({ breadcrumbs = [], auth }: AppHeaderProps) {
+export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
   const location = useLocation();
   const getInitials = useInitials();
+  const { user, isLoggedIn, isLoading } = useUser();
+
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="border-sidebar-border/80 border-b">
+        <div className="mx-auto flex h-16 items-center px-4 md:max-w-7xl">
+          <Link to="/" className="flex items-center space-x-2">
+            <AppLogo />
+          </Link>
+          <div className="ml-auto flex items-center space-x-2">
+            <LoaderCircle className="h-5 w-5 animate-spin" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -144,26 +155,24 @@ export function AppHeader({ breadcrumbs = [], auth }: AppHeaderProps) {
               </NavigationMenuList>
             </NavigationMenu>
           </div>
+
           <div className="ml-auto flex items-center space-x-2">
             <div className="relative flex items-center space-x-1"></div>
-            {auth?.user ? (
+            {isLoggedIn ? (
               // Logged-in user: show avatar + dropdown menu
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="size-10 rounded-full p-1">
                     <Avatar className="size-8 overflow-hidden rounded-full">
-                      <AvatarImage
-                        src={auth.user.avatar}
-                        alt={auth.user.name}
-                      />
+                      <AvatarImage src={user?.avatar} alt={user?.name} />
                       <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
-                        {getInitials(auth.user.name)}
+                        {user?.name ? getInitials(user.name) : "U"}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="end">
-                  <UserMenuContent user={auth.user} />
+                  <UserMenuContent user={user!} />
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (

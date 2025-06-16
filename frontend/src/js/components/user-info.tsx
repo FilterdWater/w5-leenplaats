@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/js/components/ui/avatar";
 import { useInitials } from "@/js/hooks/use-initials";
-import type { User } from "../types/user";
+import { type User } from "@/js/types/app-layout";
 
 export function UserInfo({
   user,

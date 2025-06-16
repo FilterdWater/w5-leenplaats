@@ -35,7 +35,7 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
 
   const handleSettingsClick = () => {
     cleanup();
-    navigate("/profile/edit");
+    navigate("/settings/profile");
   };
 
   if (!user) return null;
