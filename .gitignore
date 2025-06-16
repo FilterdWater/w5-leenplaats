@@ -2,3 +2,4 @@
 .env.backup
 .env.production
 .idea
+.DS_Store
