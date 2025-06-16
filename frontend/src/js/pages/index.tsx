@@ -1,4 +1,5 @@
 import { useDocumentTitle } from "@/js/hooks/use-document-title";
+import { Link } from "react-router";
 import { AppLayout } from "@/js/layouts/app-layout";
 import {
   Search,
@@ -18,10 +19,10 @@ import {
   CardTitle,
 } from "@/js/components/ui/card";
 import { Badge } from "@/js/components/ui/badge";
-import { Separator } from "@/js/components/ui/separator";
+// import { Separator } from "@/js/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/js/components/ui/avatar";
 import { type BreadcrumbItem } from "@/js/types/app-layout";
-import { AppLogoIcon } from "../components/app-logo-icon";
+// import { AppLogoIcon } from "../components/app-logo-icon";
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -365,9 +366,11 @@ export function Index() {
                 </p>
               </div>
               <div className="flex flex-col gap-4 sm:flex-row">
-                <Button size="lg">Aanmelden</Button>
-                <Button variant="outline" size="lg">
-                  Meer informatie
+                <Button size="lg" asChild>
+                  <Link to="sign-up">Aanmelden</Link>
+                </Button>
+                <Button variant="outline" size="lg" asChild>
+                  <Link to="more-info">Meer informatie</Link>
                 </Button>
               </div>
             </div>
@@ -377,7 +380,7 @@ export function Index() {
         {/* Footer */}
         <footer>
           <div className=" py-12">
-            <div className="grid gap-8 md:grid-cols-4">
+            {/* <div className="grid gap-8 md:grid-cols-4">
               <div className="space-y-4">
                 <div className="flex items-center space-x-2">
                   <AppLogoIcon className="h-6 w-6" />
@@ -504,7 +507,7 @@ export function Index() {
               </div>
             </div>
 
-            <Separator className="my-8" />
+            <Separator className="my-8" /> */}
 
             <div className="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0">
               <p className="text-sm text-muted-foreground">
