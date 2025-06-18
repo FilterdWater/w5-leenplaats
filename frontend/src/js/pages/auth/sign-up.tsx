@@ -15,6 +15,9 @@ import {
   FormMessage,
 } from "@/js/components/ui/form";
 import { AuthLayout } from "@/js/layouts/auth-layout";
+import { getAdress } from "@/js/services/postalService";
+import { createUser } from "@/js/services/userService"; // pas dit pad aan naar waar je functie staat
+import type { User, UserDTO } from "@/js/models/user";
 
 const signUpSchema = z
   .object({
@@ -54,20 +57,6 @@ export function SignUp() {
     },
   });
 
-  const getThing = async (postal: string, number: string) => {
-    try {
-      const response = await fetch(
-        `http://localhost:80/api/postal-lookup?postal=${postal}&number=${number}`
-      );
-      if (!response.ok) throw new Error("Failed to fetch address");
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Failed to fetch postal code data:", error);
-      return null;
-    }
-  };
-
   // Watch zip_code and house_number, then auto-fill address + city
   useEffect(() => {
     const subscription = form.watch(async (value, { name }) => {
@@ -76,7 +65,7 @@ export function SignUp() {
         value.zip_code?.trim() &&
         value.house_number?.trim()
       ) {
-        const result = await getThing(value.zip_code, value.house_number);
+        const result = await getAdress(value.zip_code, value.house_number);
         if (result) {
           // Auto-fill address and city fields
           form.setValue("address", `${result.street} ${result.house_number}`, {
@@ -92,47 +81,44 @@ export function SignUp() {
 
   const onSubmit = async (values: SignUpForm) => {
     setIsLoading(true);
-    try {
-      const response = await fetch("http://localhost:80/api/sign-up", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
 
-      if (response.ok) {
-        const data = await response.json();
+    const user: UserDTO = {
+      first_name: values.first_name,
+      last_name: values.last_name,
+      email: values.email.toLowerCase(),
+      zip_code: values.zip_code,
+      address: values.address + " " + values.house_number,
+      city: values.city,
+      password: values.password,
+      created_at: new Date(Date.now()),
+    };
 
-        // Optional: Store token or session here
-        if (data.token) {
-          localStorage.setItem("auth_token", data.token);
-        }
+    const result = await createUser(user);
 
-        navigate("/login");
-      } else {
-        const errorData = await response.json();
-        if (errorData.errors) {
-          Object.keys(errorData.errors).forEach((field) => {
-            form.setError(field as keyof SignUpForm, {
-              message: errorData.errors[field][0],
-            });
+    if (result.success) {
+      navigate("/login");
+    } else {
+      if (result.errors) {
+        Object.keys(result.errors).forEach((field) => {
+          form.setError(field as keyof SignUpForm, {
+            message: result.errors?.[field][0],
           });
         } else {
           form.setError("root", {
             message: errorData.message || "Registration failed.",
           });
         }
+        });
+      } else {
+        form.setError("root", {
+          message: result.message ?? "Something went wrong",
+        });
       }
-    } catch (error) {
-      form.setError("root", {
-        message: "Network error. Please check your connection and try again.",
-      });
-    } finally {
-      setIsLoading(false);
-      form.setValue("password", "");
-      form.setValue("password_confirmation", "");
     }
+
+    setIsLoading(false);
+    form.setValue("password", "");
+    form.setValue("password_confirmation", "");
   };
 
   return (
