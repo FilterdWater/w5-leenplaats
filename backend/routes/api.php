@@ -9,9 +9,15 @@ use Illuminate\Support\Facades\Route;
 Route::post('/sign-up', [UserController::class, 'store']);
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+    Route::put('/profile/update', [UserController::class, 'update']);
+    Route::put('/password/update', [UserController::class, 'updatePassword']);
+    Route::delete('/profile/delete', [UserController::class, 'destroy']);
+});
 
 Route::get('/postal-lookup', function (Request $request) {
     $postal = $request->query('postal');

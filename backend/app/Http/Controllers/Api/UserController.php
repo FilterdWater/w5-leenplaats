@@ -57,16 +57,69 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        //
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+        ]);
+
+        $user->update($validated);
+
+        return new UserResource($user);
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        if (!Hash::check($validated['current_password'], $user->password)) {
+            return response()->json([
+                'errors' => [
+                    'current_password' => ['The current password is incorrect.'],
+                ]
+            ], 422);
+        }
+
+        $user->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return response()->json(['message' => 'Password updated successfully.']);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        $user = $request->user();
+
+        $request->validate([
+            'password' => ['required'],
+        ]);
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'error' => [
+                    'field' => 'password',
+                    'message' => 'The password you entered is incorrect.',
+                ],
+            ], 422);
+        }
+
+        $user->tokens()->delete();
+
+        $user->forceDelete();
+
+        return response()->json(['message' => 'Account deleted successfully.']);
     }
 }

@@ -67,7 +67,7 @@ export function Password() {
 
     try {
       // Replace this with actual API call
-      const response = await fetch("/api/password/update", {
+      const response = await fetch("http://localhost:80/api/password/update", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

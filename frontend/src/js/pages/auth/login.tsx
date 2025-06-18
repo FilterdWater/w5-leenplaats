@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/js/components/ui/form";
 import { AuthLayout } from "@/js/layouts/auth-layout";
+import { useUser } from "@/js/context/UserContext";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -31,6 +32,7 @@ interface LoginProps {
 
 export function Login({ status }: LoginProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const { setUser } = useUser();
   const navigate = useNavigate();
 
   const form = useForm<LoginForm>({
@@ -63,10 +65,14 @@ export function Login({ status }: LoginProps) {
         // Handle successful login
         const data = await response.json();
 
+        console.log(data);
+
         // Store auth token if needed
         if (data.token) {
           localStorage.setItem("token", data.token);
         }
+
+        setUser(data.user);
 
         // Navigate to home or intended route
         navigate("/");

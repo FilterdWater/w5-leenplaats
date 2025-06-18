@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -25,6 +25,7 @@ import {
 } from "@/js/components/ui/dialog";
 
 import { HeadingSmall } from "@/js/components/heading-small";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   password: z.string().min(1, "Password is required"),
@@ -43,11 +44,20 @@ export function DeleteUser() {
     },
   });
 
+  useEffect(() => {
+    if (form.formState.errors.password) {
+      passwordInputRef.current?.focus();
+    }
+  }, [form.formState.errors.password]);
+
   const onSubmit = async (values: FormValues) => {
     try {
-      const response = await fetch("/api/profile/delete", {
+      const response = await fetch("http://localhost:80/api/profile/delete", {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
         body: JSON.stringify(values),
       });
 
@@ -55,15 +65,23 @@ export function DeleteUser() {
         const result = await response.json();
         if (result?.error?.field === "password") {
           form.setError("password", { message: result.error.message });
-          passwordInputRef.current?.focus();
+        } else {
+          form.setError("password", {
+            message: "Something went wrong. Please try again later.",
+          });
         }
         return;
       }
 
+      toast.success("Your account has been deleted.");
       form.reset();
-      navigate("/goodbye"); // or wherever you want to redirect
+      localStorage.removeItem("token"); // or however you handle auth
+      navigate("/");
     } catch (error) {
       console.error("Account deletion failed:", error);
+      form.setError("password", {
+        message: "Something went wrong. Please try again later.",
+      });
     }
   };
 
@@ -87,19 +105,14 @@ export function DeleteUser() {
             <Button variant="destructive">Delete account</Button>
           </DialogTrigger>
           <DialogContent>
-            <DialogTitle>
-              Are you sure you want to delete your account?
-            </DialogTitle>
+            <DialogTitle>Are you sure?</DialogTitle>
             <DialogDescription>
-              Once your account is deleted, all resources and data will be
-              permanently removed. Please enter your password to confirm.
+              Enter your password to confirm account deletion. This action
+              cannot be undone.
             </DialogDescription>
 
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6"
-              >
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
                   control={form.control}
                   name="password"
@@ -115,7 +128,10 @@ export function DeleteUser() {
                           placeholder="Password"
                           autoComplete="current-password"
                           {...field}
-                          ref={passwordInputRef}
+                          ref={(el) => {
+                            field.ref(el);
+                            passwordInputRef.current = el;
+                          }}
                         />
                       </FormControl>
                       <FormMessage />

@@ -109,7 +109,7 @@ export function SignUp() {
           localStorage.setItem("auth_token", data.token);
         }
 
-        navigate("/home");
+        navigate("/login");
       } else {
         const errorData = await response.json();
         if (errorData.errors) {
