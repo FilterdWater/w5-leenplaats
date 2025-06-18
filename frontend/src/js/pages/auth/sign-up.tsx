@@ -103,11 +103,6 @@ export function SignUp() {
           form.setError(field as keyof SignUpForm, {
             message: result.errors?.[field][0],
           });
-        } else {
-          form.setError("root", {
-            message: errorData.message || "Registration failed.",
-          });
-        }
         });
       } else {
         form.setError("root", {
