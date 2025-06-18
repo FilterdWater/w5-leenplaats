@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\Advertisement;
+
+class AdvertisementController extends Controller
+{
+    public function index()
+    {
+        $ads = Advertisement::all();
+        return response()->json($ads);
+    }
+
+    public function store(Request $request)
+    {
+        $ad = Advertisement::create($request->all());
+        return response()->json($ad, 201);
+    }
+
+    public function show($id)
+    {
+        return Advertisement::findOrFail($id);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $ad = Advertisement::findOrFail($id);
+        $ad->update($request->all());
+        return $ad;
+    }
+
+    public function destroy($id)
+    {
+        Advertisement::destroy($id);
+        return response()->noContent();
+    }
+}
+

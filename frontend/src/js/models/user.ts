@@ -1,13 +1,30 @@
 export interface User {
   id: number;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   address: string;
-  zipCode: string;
+  zip_code: string;
   city: string;
-  profilePicture: string;
+  profile_picture: string;
   email: string;
-  emailVerfied: boolean;
-  createAt: Date;
-  updateAt: Date;
+  email_verfied_at?: boolean;
+  password: string;
+  remember_token?: string;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+export interface UserDTO {
+  first_name: string;
+  last_name: string;
+  address: string;
+  zip_code: string;
+  city: string;
+  profile_picture?: string;
+  email: string;
+  email_verified_at?: string | null;
+  password: string;
+  remember_token?: string;
+  created_at?: Date;
+  updated_at?: Date;
 }

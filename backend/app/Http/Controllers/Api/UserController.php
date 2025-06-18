@@ -54,6 +54,16 @@ class UserController extends Controller
         //
     }
 
+public function emailExists(string $email)
+{
+    $exists = User::where('email', $email)->exists();
+
+    return response()->json([
+        'exists' => $exists,
+    ]);
+}
+
+
     /**
      * Update the specified resource in storage.
      */
