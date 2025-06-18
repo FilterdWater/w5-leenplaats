@@ -1,5 +1,3 @@
-// DeleteUser.tsx
-
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import { z } from "zod";
@@ -27,6 +25,7 @@ import {
 } from "@/js/components/ui/dialog";
 
 import { HeadingSmall } from "@/js/components/heading-small";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   password: z.string().min(1, "Password is required"),
@@ -74,10 +73,10 @@ export function DeleteUser() {
         return;
       }
 
-      alert("Your account has been deleted.");
+      toast.success("Your account has been deleted.");
       form.reset();
       localStorage.removeItem("token"); // or however you handle auth
-      navigate("/goodbye");
+      navigate("/");
     } catch (error) {
       console.error("Account deletion failed:", error);
       form.setError("password", {
