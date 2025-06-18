@@ -7,6 +7,7 @@ interface UserContextType {
   isLoggedIn: boolean;
   isLoading: boolean;
   logout: () => void;
+  refreshUser: () => Promise<void>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -15,43 +16,45 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check for existing token and validate on app startup
-  useEffect(() => {
-    const initializeAuth = async () => {
-      const token = localStorage.getItem("token");
+  const fetchUser = async () => {
+    const token = localStorage.getItem("token");
 
-      if (token) {
-        try {
-          // Validate token with your API
-          const response = await fetch("http://localhost:80/api/user", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
+    if (token) {
+      try {
+        const response = await fetch("http://localhost:80/api/user", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
 
-          if (response.ok) {
-            const userData = await response.json();
-            setUser(userData);
-          } else {
-            // Token is invalid, remove it
-            localStorage.removeItem("token");
-          }
-        } catch (error) {
-          console.error("Token validation failed:", error);
+        if (response.ok) {
+          const userData = await response.json();
+          setUser(userData);
+        } else {
           localStorage.removeItem("token");
+          setUser(null);
         }
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+        localStorage.removeItem("token");
+        setUser(null);
       }
+    }
+  };
 
-      setIsLoading(false);
-    };
-
-    initializeAuth();
+  // ✅ Initialize user on mount
+  useEffect(() => {
+    fetchUser().finally(() => setIsLoading(false));
   }, []);
 
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
+  };
+
+  const refreshUser = async () => {
+    await fetchUser(); // ✅ exposed method to re-fetch user
   };
 
   const isLoggedIn = user !== null;
@@ -64,6 +67,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         isLoggedIn,
         isLoading,
         logout,
+        refreshUser,
       }}
     >
       {children}

@@ -48,7 +48,7 @@ export function Profile() {
   const [recentlySuccessful, setRecentlySuccessful] = useState(false);
 
   // Use the UserContext
-  const { user, setUser, isLoading: userLoading } = useUser();
+  const { user, setUser, isLoading: userLoading, refreshUser } = useUser();
 
   // Initialize the form with react-hook-form and Zod validation
   const form = useForm<ProfileFormValues>({
@@ -78,7 +78,7 @@ export function Profile() {
 
     try {
       // Replace this with actual API call
-      const response = await fetch("/api/profile/update", {
+      const response = await fetch("http://localhost:80/api/profile/update", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -112,9 +112,10 @@ export function Profile() {
       const updatedUser = await response.json();
 
       // Update the user context with the new data
-      setUser({ ...user, ...updatedUser });
+      setUser(updatedUser);
       setRecentlySuccessful(true);
 
+      await refreshUser();
       // Show success toast
       toast.success("Profile updated successfully!");
 
