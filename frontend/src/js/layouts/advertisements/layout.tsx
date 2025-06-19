@@ -8,23 +8,13 @@ import { type PropsWithChildren } from "react";
 
 const sidebarNavItems: NavItem[] = [
   {
-    title: "Profile",
-    href: "/settings/profile",
-    icon: null,
-  },
-  {
-    title: "Password",
-    href: "/settings/password",
-    icon: null,
-  },
-  {
-    title: "Appearance",
-    href: "/settings/appearance",
+    title: "Create",
+    href: "/advertisements/create",
     icon: null,
   },
 ];
 
-export function SettingsLayout({ children }: PropsWithChildren) {
+export function AdvertisementsLayout({ children }: PropsWithChildren) {
   // When server-side rendering, we only render the layout on the client...
   if (typeof window === "undefined") {
     return null;
@@ -35,8 +25,8 @@ export function SettingsLayout({ children }: PropsWithChildren) {
   return (
     <div className="px-4 py-6">
       <Heading
-        title="Settings"
-        description="Manage your profile and account settings"
+        title="Advertisements"
+        description="Make & manage your items available to borrow"
       />
 
       <div className="flex flex-col space-y-8 sm:flex-row sm:space-y-0 sm:space-x-12">
