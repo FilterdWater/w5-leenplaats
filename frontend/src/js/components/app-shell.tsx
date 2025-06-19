@@ -1,5 +1,6 @@
 import { SidebarProvider } from "@/js/components/ui/sidebar";
 import { createContext, useContext } from "react";
+import type { User } from "../models/user";
 
 // Create a context for shared data if needed
 interface SharedData {

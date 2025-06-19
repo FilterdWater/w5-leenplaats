@@ -16,8 +16,8 @@ import {
 } from "@/js/components/ui/form";
 import { AuthLayout } from "@/js/layouts/auth-layout";
 import { getAdress } from "@/js/services/postalService";
-import { createUser } from "@/js/services/userService"; // pas dit pad aan naar waar je functie staat
-import type { User, UserDTO } from "@/js/models/user";
+import { createUser } from "@/js/services/userService";
+import type { UserDTO } from "@/js/models/user";
 
 const signUpSchema = z
   .object({

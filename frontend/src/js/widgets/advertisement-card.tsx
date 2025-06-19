@@ -1,7 +1,6 @@
 import { Button } from "@/js/components/ui/button";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -26,7 +25,7 @@ export function AdvertisementCard({
   onBookmark,
 }: AdvertisementCardProps) {
   const { imageUrl, title, description, categories, price } = advertisement;
-  const { firstName, lastName, profilePicture } = user;
+  const { first_name, last_name, profile_picture } = user;
   return (
     <Card className="w-full max-w-sm rounded-2xl shadow-md p-0 gap-0 z-0 overflow-hidden">
       <CardHeader className="p-0 gap-0">
@@ -63,13 +62,13 @@ export function AdvertisementCard({
 
       <CardFooter className="flex items-center gap-3 px-4 py-4 z-10 bg-zinc-50">
         <Avatar>
-          <AvatarImage src={profilePicture} alt="Profile Picture" />
+          <AvatarImage src={profile_picture} alt="Profile Picture" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
         <div className="flex justify-between items-start w-full">
           <div>
             <p className="font-semibold">
-              Gepost door {firstName} {lastName}
+              Gepost door {first_name} {last_name}
             </p>
           </div>
           <p className="text-green-600 font-semibold text-base">

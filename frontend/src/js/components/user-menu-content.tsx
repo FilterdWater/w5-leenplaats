@@ -7,7 +7,7 @@ import {
 import { UserInfo } from "@/js/components/user-info";
 import { useMobileNavigation } from "@/js/hooks/use-mobile-navigation";
 import { type User } from "@/js/types/app-layout";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { LogOut, Settings } from "lucide-react";
 
 interface UserMenuContentProps {
