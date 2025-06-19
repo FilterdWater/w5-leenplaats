@@ -9,7 +9,7 @@ export async function fetchUsers(): Promise<User[]> {
 }
 
 // GET: User with id
-export async function fetchUser(id: number): Promise<User[]> {
+export async function fetchUser(id: number): Promise<ApiResponse> {
   const res = await fetch(`http://localhost:80/api/users/${id}`);
 
   return await res.json();

@@ -10,17 +10,12 @@ import {
   useSidebar,
 } from "@/js/components/ui/sidebar";
 import { Avatar, AvatarFallback } from "@/js/components/ui/avatar";
-import { UserInfo } from "@/js/components/user-info";
-import { UserMenuContent } from "@/js/components/user-menu-content";
 import { useIsMobile } from "@/js/hooks/use-mobile";
-import { useSharedData } from "@/js/components/app-shell";
 import { ChevronsUpDown, UserRound } from "lucide-react";
 import { Link } from "react-router";
 import { useUser } from "@/js/context/UserContext";
 
 export function NavUser() {
-  const sharedData = useSharedData();
-  const auth = sharedData.auth; // Assuming auth is part of shared data
   const { state } = useSidebar();
   const isMobile = useIsMobile();
   const { user } = useUser();
@@ -44,7 +39,7 @@ export function NavUser() {
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user?.first_name}</span>
+                <span className="truncate font-medium">user?.first_name</span>
                 <span className="truncate text-xs text-muted-foreground">
                   Click to login
                 </span>
@@ -66,7 +61,7 @@ export function NavUser() {
               size="lg"
               className="group text-sidebar-accent-foreground data-[state=open]:bg-sidebar-accent"
             >
-              <UserInfo user={user.first_name} />
+              {/* <UserInfo user={user.first_name} /> */}
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
@@ -77,7 +72,7 @@ export function NavUser() {
               isMobile ? "bottom" : state === "collapsed" ? "left" : "bottom"
             }
           >
-            <UserMenuContent user={user.email} />
+            {/* <UserMenuContent user={user.email} /> */}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
