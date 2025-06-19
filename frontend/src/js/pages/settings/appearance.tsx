@@ -24,7 +24,7 @@ export function Appearance() {
         <div className="space-y-6">
           <HeadingSmall
             title="Appearance settings"
-            description="Update your account's appearance settings"
+            description="Update your appearance settings"
           />
           <AppearanceTabs />
         </div>
