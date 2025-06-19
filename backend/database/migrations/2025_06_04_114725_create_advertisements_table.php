@@ -17,9 +17,9 @@ return new class extends Migration
             $table->text('description');
             $table->decimal('price', 10, 2);
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('rented_by')->constrained('users')->nullable()->onDelete('cascade');
-            $table->date('rented_at');
-            $table->date('rented_until');
+            $table->foreignId('rented_by')->nullable()->constrained('users')->onDelete('cascade');
+            $table->date('rented_at')->nullable();
+            $table->date('rented_until')->nullable();
             $table->timestamps();
         });
     }
