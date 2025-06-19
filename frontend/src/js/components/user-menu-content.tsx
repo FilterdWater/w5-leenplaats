@@ -7,14 +7,17 @@ import {
 import { UserInfo } from "@/js/components/user-info";
 import { useMobileNavigation } from "@/js/hooks/use-mobile-navigation";
 import { type User } from "@/js/types/app-layout";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { LogOut, Settings } from "lucide-react";
+import { useUser } from "@/js/context/UserContext";
 
 interface UserMenuContentProps {
   user: User;
 }
 
 export function UserMenuContent({ user }: UserMenuContentProps) {
+  const { setUser } = useUser();
+
   const cleanup = useMobileNavigation();
   const navigate = useNavigate();
 
@@ -26,8 +29,9 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
     try {
       // await authService.logout();
       // Clear local storage, cookies, etc.
-      localStorage.clear();
-      navigate("/login");
+      localStorage.removeItem("token");
+      setUser(null);
+      navigate("/");
     } catch (error) {
       console.error("Logout failed:", error);
     }
