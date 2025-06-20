@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Route;
 // Auth
 Route::post('/login', [AuthController::class, 'login']);
 
-
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
@@ -20,6 +19,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/password/update', [UserController::class, 'updatePassword']);
     Route::delete('/profile/delete', [UserController::class, 'destroy']);
 });
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
