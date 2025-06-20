@@ -32,7 +32,7 @@ export function NavUser() {
             className="group text-sidebar-accent-foreground"
             asChild
           >
-            <Link to="/login">
+            <Link to="/auth/login">
               <Avatar className="h-8 w-8 overflow-hidden rounded-full">
                 <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
                   <UserRound className="h-4 w-4" />

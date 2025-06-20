@@ -141,7 +141,7 @@ export function Login() {
           <div className="text-center text-sm text-muted-foreground">
             Don't have an account?{" "}
             <Link
-              to="/sign-up"
+              to="/auth/sign-up"
               className="text-primary hover:underline"
               tabIndex={6}
             >

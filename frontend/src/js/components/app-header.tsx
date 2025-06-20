@@ -197,10 +197,10 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                   <div className="flex flex-col items-center justify-between gap-3 sm:flex-row-reverse">
                     <div className="flex justify-end space-x-2">
                       <Button variant="secondary" asChild>
-                        <Link to="/sign-up">Sign up</Link>
+                        <Link to="/auth/sign-up">Sign up</Link>
                       </Button>
                       <Button asChild>
-                        <Link to="/login">Login</Link>
+                        <Link to="/auth/login">Login</Link>
                       </Button>
                     </div>
                     <div className="flex justify-end">

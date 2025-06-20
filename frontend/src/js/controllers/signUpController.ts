@@ -26,7 +26,7 @@ export async function handleSignUp(
 
   if (result.success) {
     form.reset();
-    navigate("/login", {
+    navigate("/auth/login", {
       state: { email: values.email, fromSignup: true },
     });
   } else {
