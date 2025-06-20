@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { loginSchema, type LoginForm } from "@/js/schemas/loginSchema";
 import { LoaderCircle } from "lucide-react";
+
 import { Button } from "@/js/components/ui/button";
 import { Checkbox } from "@/js/components/ui/checkbox";
 import { Input } from "@/js/components/ui/input";
@@ -15,106 +16,49 @@ import {
   FormLabel,
   FormMessage,
 } from "@/js/components/ui/form";
+
 import { AuthLayout } from "@/js/layouts/auth-layout";
 import { useUser } from "@/js/context/UserContext";
+import { handleLogin } from "@/js/controllers/loginController";
 
-const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(1, "Password is required"),
-  remember: z.boolean(),
-});
-
-type LoginForm = z.infer<typeof loginSchema>;
-
-interface LoginProps {
-  status?: string;
-}
-
-export function Login({ status }: LoginProps) {
+export function Login() {
   const [isLoading, setIsLoading] = useState(false);
-  const { setUser } = useUser();
   const navigate = useNavigate();
+  const { setUser } = useUser();
+  const location = useLocation();
+
+  const prefillEmail = location.state?.email ?? "";
+  const statusMessage = location.state?.status ?? "";
 
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
+      email: prefillEmail,
       password: "",
       remember: false,
     },
   });
-
-  const onSubmit = async (values: LoginForm) => {
-    setIsLoading(true);
-
-    try {
-      // Replace this with your actual login API call
-      const response = await fetch("http://localhost:80/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: values.email,
-          password: values.password,
-          remember: values.remember,
-        }),
-      });
-
-      if (response.ok) {
-        // Handle successful login
-        const data = await response.json();
-
-        console.log(data);
-
-        // Store auth token if needed
-        if (data.token) {
-          localStorage.setItem("token", data.token);
-        }
-
-        setUser(data.user);
-
-        // Navigate to home or intended route
-        navigate("/");
-      } else {
-        // Handle login errors
-        const errorData = await response.json();
-
-        // Set form errors based on response
-        if (errorData.errors) {
-          Object.keys(errorData.errors).forEach((field) => {
-            form.setError(field as keyof LoginForm, {
-              message: errorData.errors[field][0],
-            });
-          });
-        } else {
-          form.setError("root", {
-            message: errorData.message || "Login failed. Please try again.",
-          });
-        }
-      }
-    } catch (error) {
-      form.setError("root", {
-        message: "Network error. Please check your connection and try again.",
-      });
-    } finally {
-      setIsLoading(false);
-      // Clear password field on completion (success or failure)
-      form.setValue("password", "");
-    }
-  };
 
   return (
     <AuthLayout
       title="Log in"
       description="Enter your information below to log in"
     >
+      {statusMessage && (
+        <div className="mb-4 text-center text-sm font-medium text-green-600">
+          {statusMessage}
+        </div>
+      )}
+
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit((values) =>
+            handleLogin(values, form, setIsLoading, navigate, setUser)
+          )}
           className="flex flex-col gap-6"
         >
           <div className="grid gap-6">
+            {/* Email */}
             <FormField
               control={form.control}
               name="email"
@@ -136,14 +80,13 @@ export function Login({ status }: LoginProps) {
               )}
             />
 
+            {/* Password */}
             <FormField
               control={form.control}
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <div className="flex items-center">
-                    <FormLabel>Password</FormLabel>
-                  </div>
+                  <FormLabel>Password</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
@@ -158,6 +101,7 @@ export function Login({ status }: LoginProps) {
               )}
             />
 
+            {/* Remember Me */}
             <FormField
               control={form.control}
               name="remember"
@@ -177,12 +121,14 @@ export function Login({ status }: LoginProps) {
               )}
             />
 
+            {/* Global Error */}
             {form.formState.errors.root && (
               <div className="text-sm text-destructive">
                 {form.formState.errors.root.message}
               </div>
             )}
 
+            {/* Submit */}
             <Button type="submit" tabIndex={4} disabled={isLoading}>
               {isLoading && (
                 <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
@@ -191,6 +137,7 @@ export function Login({ status }: LoginProps) {
             </Button>
           </div>
 
+          {/* Footer */}
           <div className="text-center text-sm text-muted-foreground">
             Don't have an account?{" "}
             <Link
@@ -203,12 +150,6 @@ export function Login({ status }: LoginProps) {
           </div>
         </form>
       </Form>
-
-      {status && (
-        <div className="mb-4 text-center text-sm font-medium text-green-600">
-          {status}
-        </div>
-      )}
     </AuthLayout>
   );
 }

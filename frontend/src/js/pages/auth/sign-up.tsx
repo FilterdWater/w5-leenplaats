@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { LoaderCircle } from "lucide-react";
+
 import { Button } from "@/js/components/ui/button";
 import { Input } from "@/js/components/ui/input";
 import {
@@ -14,29 +14,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/js/components/ui/form";
+
 import { AuthLayout } from "@/js/layouts/auth-layout";
 import { getAdress } from "@/js/services/postalService";
-import { createUser } from "@/js/services/userService";
-import type { UserDTO } from "@/js/models/user";
-
-const signUpSchema = z
-  .object({
-    first_name: z.string().min(1, "First name is required"),
-    last_name: z.string().min(1, "Last name is required"),
-    email: z.string().email("Please enter a valid email address"),
-    zip_code: z.string().min(1, "Please enter a valid zip code"),
-    house_number: z.string().min(1, "Please enter a valid house number"),
-    address: z.string().min(1, "Address is required"),
-    city: z.string().min(1, "Please enter a valid city"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    password_confirmation: z.string().min(6, "Please confirm your password"),
-  })
-  .refine((data) => data.password === data.password_confirmation, {
-    message: "Passwords do not match",
-    path: ["password_confirmation"],
-  });
-
-type SignUpForm = z.infer<typeof signUpSchema>;
+import { signUpSchema } from "@/js/schemas/signUpSchema";
+import type { SignUpForm } from "@/js/schemas/signUpSchema";
+import { handleSignUp } from "@/js/controllers/signUpController";
 
 export function SignUp() {
   const [isLoading, setIsLoading] = useState(false);
@@ -57,7 +40,7 @@ export function SignUp() {
     },
   });
 
-  // Watch zip_code and house_number, then auto-fill address + city
+  // Auto-fill address and city from zip + house number
   useEffect(() => {
     const subscription = form.watch(async (value, { name }) => {
       if (
@@ -67,7 +50,6 @@ export function SignUp() {
       ) {
         const result = await getAdress(value.zip_code, value.house_number);
         if (result) {
-          // Auto-fill address and city fields
           form.setValue("address", `${result.street} ${result.house_number}`, {
             shouldValidate: true,
           });
@@ -79,43 +61,6 @@ export function SignUp() {
     return () => subscription.unsubscribe();
   }, [form]);
 
-  const onSubmit = async (values: SignUpForm) => {
-    setIsLoading(true);
-
-    const user: UserDTO = {
-      first_name: values.first_name,
-      last_name: values.last_name,
-      email: values.email.toLowerCase(),
-      zip_code: values.zip_code,
-      address: values.address + " " + values.house_number,
-      city: values.city,
-      password: values.password,
-      created_at: new Date(Date.now()),
-    };
-
-    const result = await createUser(user);
-
-    if (result.success) {
-      navigate("/login");
-    } else {
-      if (result.errors) {
-        Object.keys(result.errors).forEach((field) => {
-          form.setError(field as keyof SignUpForm, {
-            message: result.errors?.[field][0],
-          });
-        });
-      } else {
-        form.setError("root", {
-          message: result.message ?? "Something went wrong",
-        });
-      }
-    }
-
-    setIsLoading(false);
-    form.setValue("password", "");
-    form.setValue("password_confirmation", "");
-  };
-
   return (
     <AuthLayout
       title="Create an account"
@@ -123,10 +68,14 @@ export function SignUp() {
     >
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit((values) =>
+            handleSignUp(values, form, setIsLoading, navigate)
+          )}
           className="flex flex-col gap-6"
         >
+          {" "}
           <div className="grid gap-6">
+            {/* First Name */}
             <FormField
               control={form.control}
               name="first_name"
@@ -134,19 +83,24 @@ export function SignUp() {
                 <FormItem>
                   <FormLabel>First Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Name" autoComplete="name" {...field} />
+                    <Input
+                      placeholder="Name"
+                      autoComplete="given-name"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
+            {/* Last Name */}
             <FormField
               control={form.control}
               name="last_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Last name</FormLabel>
+                  <FormLabel>Last Name</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Name"
@@ -159,7 +113,7 @@ export function SignUp() {
               )}
             />
 
-            {/* Zip code */}
+            {/* Zip Code */}
             <FormField
               control={form.control}
               name="zip_code"
@@ -178,6 +132,7 @@ export function SignUp() {
               )}
             />
 
+            {/* House Number */}
             <FormField
               control={form.control}
               name="house_number"
@@ -192,6 +147,7 @@ export function SignUp() {
               )}
             />
 
+            {/* Address (auto-filled) */}
             <FormField
               control={form.control}
               name="address"
@@ -206,6 +162,7 @@ export function SignUp() {
               )}
             />
 
+            {/* City (auto-filled) */}
             <FormField
               control={form.control}
               name="city"
@@ -220,6 +177,7 @@ export function SignUp() {
               )}
             />
 
+            {/* Email */}
             <FormField
               control={form.control}
               name="email"
@@ -239,6 +197,7 @@ export function SignUp() {
               )}
             />
 
+            {/* Password */}
             <FormField
               control={form.control}
               name="password"
@@ -258,12 +217,13 @@ export function SignUp() {
               )}
             />
 
+            {/* Password Confirmation */}
             <FormField
               control={form.control}
               name="password_confirmation"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirm password</FormLabel>
+                  <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
@@ -277,12 +237,14 @@ export function SignUp() {
               )}
             />
 
+            {/* Global Form Error */}
             {form.formState.errors.root && (
               <div className="text-sm text-destructive">
                 {form.formState.errors.root.message}
               </div>
             )}
 
+            {/* Submit */}
             <Button type="submit" disabled={isLoading}>
               {isLoading && (
                 <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
@@ -290,7 +252,7 @@ export function SignUp() {
               Create account
             </Button>
           </div>
-
+          {/* Footer */}
           <div className="text-center text-sm text-muted-foreground">
             Already have an account?{" "}
             <Link to="/login" className="text-primary hover:underline">
