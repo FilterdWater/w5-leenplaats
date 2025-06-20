@@ -26,52 +26,71 @@ import { Appearance } from "@/js/pages/settings/appearance";
 import { CreateAd } from "@/js/pages/advertisements/create-ad";
 
 // Test
-import { Test } from "./test";
+import { Test } from "@/js/pages/test";
 
 // Configuration with nested routes
 const router = createBrowserRouter([
   // Root layout
   {
     path: "/",
-    element: <App />,
+    Component: App,
     errorElement: <NotFound />,
     children: [
       // Home path
       {
-        index: true, // This makes it the default route for "/"
-        element: <Index />,
+        index: true,
+        Component: Index,
       },
-      // Auth paths
+
+      // Auth routes
       {
-        path: "login",
-        element: <Login />,
+        path: "auth",
+        children: [
+          {
+            path: "login",
+            Component: Login,
+          },
+          {
+            path: "sign-up",
+            Component: SignUp,
+          },
+        ],
       },
+
+      // Settings routes
       {
-        path: "sign-up",
-        element: <SignUp />,
+        path: "settings",
+        children: [
+          {
+            path: "profile",
+            Component: Profile,
+          },
+          {
+            path: "password",
+            Component: Password,
+          },
+          {
+            path: "appearance",
+            Component: Appearance,
+          },
+        ],
       },
-      // settings paths
+
+      // Advertisements routes
       {
-        path: "/settings/profile",
-        element: <Profile />,
+        path: "advertisements",
+        children: [
+          {
+            path: "create",
+            Component: CreateAd,
+          },
+        ],
       },
+
+      // Test path
       {
-        path: "/settings/password",
-        element: <Password />,
-      },
-      {
-        path: "/settings/appearance",
-        element: <Appearance />,
-      },
-      // advertisements paths
-      {
-        path: "/advertisements/create",
-        element: <CreateAd />,
-      },
-      // test path
-      {
-        path: "/test",
-        element: <Test />,
+        path: "test",
+        Component: Test,
       },
     ],
   },
