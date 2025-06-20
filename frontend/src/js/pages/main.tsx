@@ -1,51 +1,96 @@
+// React
 import { StrictMode } from "react";
+
+// React Router
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router";
+
+// Global CSS
 import "@/css/app.css";
+
+// Default / Main Pages
 import { NotFound } from "@/js/pages/not-found";
 import { App } from "@/js/pages/app.tsx";
 import { Index } from "@/js/pages/index.tsx";
+
+// Auth
 import { Login } from "@/js/pages/auth/login.tsx";
 import { SignUp } from "@/js/pages/auth/sign-up";
+
+// Settings
 import { Profile } from "@/js/pages/settings/profile";
 import { Password } from "@/js/pages/settings/password";
 import { Appearance } from "@/js/pages/settings/appearance";
-import { Test } from "./test";
+
+// Advertisement
+import { CreateAd } from "@/js/pages/advertisements/create-ad";
+
+// Test
+import { Test } from "@/js/pages/test";
 
 // Configuration with nested routes
 const router = createBrowserRouter([
+  // Root layout
   {
     path: "/",
-    element: <App />,
+    Component: App,
     errorElement: <NotFound />,
     children: [
+      // Home path
       {
-        index: true, // This makes it the default route for "/"
-        element: <Index />,
+        index: true,
+        Component: Index,
       },
+
+      // Auth routes
       {
-        path: "login",
-        element: <Login />,
+        path: "auth",
+        children: [
+          {
+            path: "login",
+            Component: Login,
+          },
+          {
+            path: "sign-up",
+            Component: SignUp,
+          },
+        ],
       },
+
+      // Settings routes
       {
-        path: "sign-up",
-        element: <SignUp />,
+        path: "settings",
+        children: [
+          {
+            path: "profile",
+            Component: Profile,
+          },
+          {
+            path: "password",
+            Component: Password,
+          },
+          {
+            path: "appearance",
+            Component: Appearance,
+          },
+        ],
       },
+
+      // Advertisements routes
       {
-        path: "/settings/profile",
-        element: <Profile />,
+        path: "advertisements",
+        children: [
+          {
+            path: "create",
+            Component: CreateAd,
+          },
+        ],
       },
+
+      // Test path
       {
-        path: "/settings/password",
-        element: <Password />,
-      },
-      {
-        path: "/settings/appearance",
-        element: <Appearance />,
-      },
-      {
-        path: "/test",
-        element: <Test />,
+        path: "test",
+        Component: Test,
       },
     ],
   },
