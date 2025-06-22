@@ -162,7 +162,7 @@ export function Advertisements() {
         <div className="container mx-auto px-4 py-6">
           <div className="mb-8">
             <Heading
-              title="Beschikbare Advertenties"
+              title="Beschikbare Items"
               description="Ontdek wat anderen beschikbaar hebben gesteld om te lenen"
             />
           </div>
