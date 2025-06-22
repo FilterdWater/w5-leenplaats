@@ -66,22 +66,6 @@ const formSchema = z.object({
         message: "Please enter a valid positive number.",
       }
     ),
-  lenderName: z
-    .string()
-    .min(1, {
-      message: "Lender name is required.",
-    })
-    .max(50, {
-      message: "Lender name must be less than 50 characters.",
-    }),
-  location: z
-    .string()
-    .min(1, {
-      message: "Location is required.",
-    })
-    .max(100, {
-      message: "Location must be less than 100 characters.",
-    }),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -102,8 +86,6 @@ export function CreateAd() {
       title: "",
       description: "",
       pricePerDay: "",
-      lenderName: "",
-      location: "",
     },
   });
 
@@ -249,9 +231,7 @@ export function CreateAd() {
                           <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>
-                            Set your daily rental price in your local currency
-                          </p>
+                          <p>Set your daily rental price</p>
                         </TooltipContent>
                       </Tooltip>
                     </div>
@@ -268,62 +248,6 @@ export function CreateAd() {
                   </FormItem>
                 )}
               />
-
-              {/* Lender Name Field */}
-              {/* <FormField
-                control={form.control}
-                name="lenderName"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center gap-2">
-                      <FormLabel>Lender Name</FormLabel>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>This is how borrowers will know who to contact</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                    <FormControl>
-                      <Input
-                        placeholder="Your name or business name"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
-
-              {/* Location Field */}
-              {/* <FormField
-                control={form.control}
-                name="location"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center gap-2">
-                      <FormLabel>Location</FormLabel>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Help borrowers find items near them</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                    <FormControl>
-                      <Input
-                        placeholder="City, State or general area"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
 
               {/* Submit Button */}
               <div className="flex gap-4 pt-4">
