@@ -23,6 +23,7 @@ import { Password } from "@/js/pages/settings/password";
 import { Appearance } from "@/js/pages/settings/appearance";
 
 // Advertisement
+import { Advertisements } from "@/js/pages/advertisements/advertisements";
 import { CreateAd } from "@/js/pages/advertisements/create-ad";
 
 // Test
@@ -79,6 +80,7 @@ const router = createBrowserRouter([
       // Advertisements routes
       {
         path: "advertisements",
+        Component: Advertisements,
         children: [
           {
             path: "create",
