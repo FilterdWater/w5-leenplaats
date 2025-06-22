@@ -40,11 +40,11 @@ export function AdvertisementCard({
 
           {/* Bookmark Button - Floating */}
           <Button
-            className="absolute top-3 right-3 rounded-full size-9 border-0 transition-all duration-200 backdrop-blur-sm"
+            className="absolute hover:scale-110 top-3 right-3 rounded-full size-9 border-0 transition-all hover:bg-background"
             variant="secondary"
             onClick={onBookmark}
           >
-            <Bookmark className="h-4 w-4 text-muted-foreground" />
+            <Bookmark className="h-4 w-4 text-foreground" />
           </Button>
         </div>
       </CardHeader>
@@ -53,7 +53,7 @@ export function AdvertisementCard({
       <CardContent className="p-5 space-y-4">
         {/* Title */}
         <div>
-          <CardTitle className="text-xl font-bold text-card-foreground line-clamp-2 leading-tight">
+          <CardTitle className="text-xl font-bold text-card-foreground line-clamp-2 leading-tight pb-2">
             {title}
           </CardTitle>
           <CardDescription className="text-muted-foreground mt-2 line-clamp-2 text-sm leading-relaxed">
@@ -85,10 +85,10 @@ export function AdvertisementCard({
 
       {/* Footer */}
       <CardFooter className="px-5 py-4 bg-muted/50 border-t border-border">
-        <div className="flex items-center justify-between w-full">
+        <div className="flex items-center justify-between w-full gap-3">
           {/* User Info */}
-          <div className="flex items-center gap-3">
-            <Avatar className="size-8">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <Avatar className="size-8 flex-shrink-0">
               <AvatarImage src={profile_picture} alt="Profile Picture" />
               <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-primary-foreground text-xs font-semibold">
                 {first_name.charAt(0)}
@@ -99,12 +99,11 @@ export function AdvertisementCard({
               <p className="text-sm font-medium text-card-foreground truncate">
                 {first_name} {last_name}
               </p>
-              <p className="text-xs text-muted-foreground">Verhuurder</p>
             </div>
           </div>
 
           {/* Price */}
-          <div className="text-right">
+          <div className="text-right flex-shrink-0">
             <div className="flex items-baseline gap-1">
               <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
                 €{price}
