@@ -80,8 +80,11 @@ const router = createBrowserRouter([
       // Advertisements routes
       {
         path: "advertisements",
-        Component: Advertisements,
         children: [
+          {
+            index: true,
+            Component: Advertisements,
+          },
           {
             path: "create",
             Component: CreateAd,

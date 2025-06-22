@@ -5,6 +5,8 @@ import { AdvertisementCard } from "@/js/widgets/advertisement-card";
 import type { Advertisement } from "@/js/models/advertisement";
 import type { User } from "@/js/models/user";
 import { Heading } from "@/js/components/heading";
+import { Button } from "@/js/components/ui/button";
+import { Link } from "react-router";
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -160,6 +162,11 @@ export function Advertisements() {
     <>
       <AppLayout breadcrumbs={breadcrumbs}>
         <div className="container mx-auto px-4 py-6">
+          <div className="flex justify-end">
+            <Button asChild>
+              <Link to="create">Create Ad</Link>
+            </Button>
+          </div>
           <div className="mb-8">
             <Heading
               title="Beschikbare Items"
