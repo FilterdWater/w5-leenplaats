@@ -189,9 +189,7 @@ export function CreateAd() {
                           <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>
-                            Set your daily rental price in your local currency
-                          </p>
+                          <p>Set your daily rental price</p>
                         </TooltipContent>
                       </Tooltip>
                     </div>
