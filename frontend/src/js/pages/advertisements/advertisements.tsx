@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useDocumentTitle } from "@/js/hooks/use-document-title";
 import { AppLayout } from "@/js/layouts/app-layout";
 import type { BreadcrumbItem } from "@/js/types/app-layout";
@@ -11,7 +12,7 @@ import { Link } from "react-router";
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: "Advertisements",
-    href: "/",
+    href: "/advertisements",
   },
 ];
 
@@ -153,9 +154,23 @@ export function Advertisements() {
     "On this page you can view everything people have made available to lend"
   );
 
+  // State to track bookmarked advertisements
+  const [bookmarkedItems, setBookmarkedItems] = useState<Set<number>>(
+    new Set()
+  );
+
   const handleBookmark = (advertisementId: number) => {
-    console.log(`Bookmarked advertisement ${advertisementId}`);
-    // Add your bookmark logic here
+    setBookmarkedItems((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(advertisementId)) {
+        newSet.delete(advertisementId);
+        console.log(`Removed bookmark for advertisement ${advertisementId}`);
+      } else {
+        newSet.add(advertisementId);
+        console.log(`Bookmarked advertisement ${advertisementId}`);
+      }
+      return newSet;
+    });
   };
 
   return (
@@ -186,6 +201,7 @@ export function Advertisements() {
                   key={advertisement.id}
                   advertisement={advertisement}
                   user={user}
+                  isBookmarked={bookmarkedItems.has(advertisement.id)}
                   onBookmark={() => handleBookmark(advertisement.id)}
                 />
               );

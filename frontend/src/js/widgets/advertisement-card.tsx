@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/js/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/js/components/ui/avatar";
-import { Bookmark } from "lucide-react";
+import { Bookmark, BookmarkCheck } from "lucide-react";
 import { Badge } from "@/js/components/ui/badge";
 import type { Advertisement } from "../models/advertisement";
 import type { User } from "../models/user";
@@ -16,12 +16,14 @@ import type { User } from "../models/user";
 type AdvertisementCardProps = {
   advertisement: Advertisement;
   user: User;
+  isBookmarked?: boolean;
   onBookmark?: () => void;
 };
 
 export function AdvertisementCard({
   advertisement,
   user,
+  isBookmarked = false,
   onBookmark,
 }: AdvertisementCardProps) {
   const { imageUrl, title, description, categories, price } = advertisement;
@@ -44,7 +46,11 @@ export function AdvertisementCard({
             variant="secondary"
             onClick={onBookmark}
           >
-            <Bookmark className="h-4 w-4 text-foreground" />
+            {isBookmarked ? (
+              <BookmarkCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+            ) : (
+              <Bookmark className="h-4 w-4 text-foreground" />
+            )}
           </Button>
         </div>
       </CardHeader>
