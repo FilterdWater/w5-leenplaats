@@ -18,6 +18,7 @@ type AdvertisementCardProps = {
   user: User;
   isBookmarked?: boolean;
   onBookmark?: () => void;
+  isAvailable?: boolean;
 };
 
 export function AdvertisementCard({
@@ -25,6 +26,7 @@ export function AdvertisementCard({
   user,
   isBookmarked = false,
   onBookmark,
+  isAvailable = true,
 }: AdvertisementCardProps) {
   const { imageUrl, title, description, categories, price } = advertisement;
   const { first_name, last_name, profile_picture } = user;
@@ -37,21 +39,47 @@ export function AdvertisementCard({
           <img
             src={imageUrl}
             alt={title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
+              !isAvailable ? "grayscale opacity-60" : ""
+            }`}
           />
 
-          {/* Bookmark Button - Floating */}
-          <Button
-            className="absolute hover:scale-110 top-3 right-3 rounded-full size-9 border-0 transition-all hover:bg-background"
-            variant="secondary"
-            onClick={onBookmark}
-          >
-            {isBookmarked ? (
-              <BookmarkCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+          {/* Availability Badge */}
+          <div className="absolute top-3 left-3">
+            {isAvailable ? (
+              <div className="bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
+                Beschikbaar
+              </div>
             ) : (
-              <Bookmark className="h-4 w-4 text-foreground" />
+              <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
+                Niet beschikbaar
+              </div>
             )}
-          </Button>
+          </div>
+
+          {/* Bookmark Button, only show when unavailable */}
+          {!isAvailable && (
+            <Button
+              className="absolute hover:scale-110 top-3 right-3 rounded-full size-9 border-0 transition-all hover:bg-background"
+              variant="secondary"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onBookmark?.();
+              }}
+              title={
+                isBookmarked
+                  ? "Verwijder van wachtlijst"
+                  : "Voeg toe aan wachtlijst"
+              }
+            >
+              {isBookmarked ? (
+                <BookmarkCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              ) : (
+                <Bookmark className="h-4 w-4 text-foreground" />
+              )}
+            </Button>
+          )}
         </div>
       </CardHeader>
 
@@ -111,7 +139,13 @@ export function AdvertisementCard({
           {/* Price */}
           <div className="text-right flex-shrink-0">
             <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+              <span
+                className={`text-2xl font-bold ${
+                  isAvailable
+                    ? "text-emerald-600 dark:text-emerald-400"
+                    : "text-muted-foreground"
+                }`}
+              >
                 €{price}
               </span>
               <span className="text-sm text-muted-foreground font-medium">
