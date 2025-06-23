@@ -12,6 +12,7 @@ import { Bookmark, BookmarkCheck } from "lucide-react";
 import { Badge } from "@/js/components/ui/badge";
 import type { Advertisement } from "../models/advertisement";
 import type { User } from "../models/user";
+import { Link } from "react-router";
 
 type AdvertisementCardProps = {
   advertisement: Advertisement;
@@ -28,7 +29,7 @@ export function AdvertisementCard({
   onBookmark,
   isAvailable = true,
 }: AdvertisementCardProps) {
-  const { imageUrl, title, description, categories, price } = advertisement;
+  const { title, description, categories, price } = advertisement;
   const { first_name, last_name, profile_picture } = user;
 
   return (
@@ -36,13 +37,15 @@ export function AdvertisementCard({
       {/* Image Header */}
       <CardHeader className="p-0 relative overflow-hidden">
         <div className="relative h-52 bg-muted">
-          <img
-            src={imageUrl}
-            alt={title}
-            className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
-              !isAvailable ? "grayscale opacity-60" : ""
-            }`}
-          />
+          <Link to={`/advertisements/${advertisement.id}`}>
+            <img
+              src={advertisement.imageUrl}
+              alt={advertisement.title}
+              className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
+                !isAvailable ? "grayscale opacity-60" : ""
+              }`}
+            />
+          </Link>
 
           {/* Availability Badge */}
           <div className="absolute top-3 left-3">

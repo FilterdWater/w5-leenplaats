@@ -24,6 +24,7 @@ import { Appearance } from "@/js/pages/settings/appearance";
 
 // Advertisement
 import { Advertisements } from "@/js/pages/advertisements/advertisements";
+import { Advertisement } from "@/js/pages/advertisements/advertisement";
 import { CreateAd } from "@/js/pages/advertisements/create-ad";
 
 // Test
@@ -84,6 +85,10 @@ const router = createBrowserRouter([
           {
             index: true,
             Component: Advertisements,
+          },
+          {
+            path: ":id",
+            Component: Advertisement,
           },
           {
             path: "create",
