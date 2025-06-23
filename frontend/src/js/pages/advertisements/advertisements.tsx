@@ -159,15 +159,29 @@ export function Advertisements() {
     new Set()
   );
 
+  // Sample availability data, replace with actual data source
+  const availabilityStatus: Record<number, boolean> = {
+    1: true, // Elektrische Boormachine - available
+    2: false, // Camping Tent - unavailable
+    3: true, // Professionele Camera - available
+    4: false, // Ladder 3 meter - unavailable
+    5: true, // Elektrische Fiets - available
+    6: false, // Projector - unavailable
+  };
+
   const handleBookmark = (advertisementId: number) => {
     setBookmarkedItems((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(advertisementId)) {
         newSet.delete(advertisementId);
-        console.log(`Removed bookmark for advertisement ${advertisementId}`);
+        console.log(
+          `Removed from notification list: advertisement ${advertisementId}`
+        );
       } else {
         newSet.add(advertisementId);
-        console.log(`Bookmarked advertisement ${advertisementId}`);
+        console.log(
+          `Added to notification list: advertisement ${advertisementId}`
+        );
       }
       return newSet;
     });
@@ -196,12 +210,15 @@ export function Advertisements() {
               );
               if (!user) return null;
 
+              const isAvailable = availabilityStatus[advertisement.id] ?? true;
+
               return (
                 <AdvertisementCard
                   key={advertisement.id}
                   advertisement={advertisement}
                   user={user}
                   isBookmarked={bookmarkedItems.has(advertisement.id)}
+                  isAvailable={isAvailable}
                   onBookmark={() => handleBookmark(advertisement.id)}
                 />
               );
