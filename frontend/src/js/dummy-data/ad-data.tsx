@@ -11,8 +11,7 @@ export const sampleUsers: User[] = [
     city: "Amsterdam",
     email: "jan.devries@example.com",
     password: "hashed_password_here",
-    profile_picture:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+    profile_picture: "https://picsum.photos/id/375/500/500",
   },
   {
     id: 2,
@@ -23,7 +22,7 @@ export const sampleUsers: User[] = [
     city: "Utrecht",
     email: "maria.janssen@example.com",
     password: "hashed_password_here",
-    profile_picture: "https://picsum.photos/id/27/150/150",
+    profile_picture: "https://picsum.photos/id/27/500/500",
   },
   {
     id: 3,
@@ -34,22 +33,20 @@ export const sampleUsers: User[] = [
     city: "Rotterdam",
     email: "pieter.vandenberg@example.com",
     password: "hashed_password_here",
-    profile_picture:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+    profile_picture: "https://picsum.photos/id/338/500/500",
   },
 ];
 
 export const sampleAdvertisements: Advertisement[] = [
   {
     id: 1,
-    imageUrl:
-      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
-    title: "Elektrische Boormachine",
+    imageUrl: "https://picsum.photos/id/491/500/500",
+    title: "Gereedschap",
     description:
-      "Professionele boormachine perfect voor klussen in huis. Inclusief verschillende boren.",
+      "Inclusief professionele boormachine perfect voor klussen in huis met verschillende boren.",
     categories: [
       { id: 1, name: "Gereedschap" },
-      { id: 2, name: "Nieuw" },
+      { id: 2, name: "Gebruikt" },
     ],
     price: 15,
     userId: 1,
@@ -57,11 +54,9 @@ export const sampleAdvertisements: Advertisement[] = [
   },
   {
     id: 2,
-    imageUrl:
-      "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop",
+    imageUrl: "https://picsum.photos/id/62/500/500",
     title: "Camping Tent",
-    description:
-      "Ruime 4-persoons tent, waterproof en makkelijk op te zetten. Perfect voor festivals.",
+    description: "Ruime 4-persoons tent, waterproof en makkelijk op te zetten.",
     categories: [
       { id: 3, name: "Camping" },
       { id: 4, name: "Outdoor" },
@@ -72,8 +67,7 @@ export const sampleAdvertisements: Advertisement[] = [
   },
   {
     id: 3,
-    imageUrl:
-      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop",
+    imageUrl: "https://picsum.photos/id/250/500/500",
     title: "Professionele Camera",
     description:
       "Canon EOS R5 met 24-70mm lens. Ideaal voor evenementen en fotoshoots.",
@@ -87,8 +81,7 @@ export const sampleAdvertisements: Advertisement[] = [
   },
   {
     id: 4,
-    imageUrl:
-      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop",
+    imageUrl: "https://picsum.photos/id/71/500/500",
     title: "Ladder 3 meter",
     description:
       "Stevige aluminium ladder, uitschuifbaar tot 3 meter. Veilig en stabiel.",
@@ -102,8 +95,7 @@ export const sampleAdvertisements: Advertisement[] = [
   },
   {
     id: 5,
-    imageUrl:
-      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
+    imageUrl: "https://picsum.photos/id/839/500/500",
     title: "Elektrische Fiets",
     description:
       "Moderne e-bike met lange actieradius. Perfect voor dagelijkse ritten door de stad.",
@@ -117,8 +109,7 @@ export const sampleAdvertisements: Advertisement[] = [
   },
   {
     id: 6,
-    imageUrl:
-      "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop",
+    imageUrl: "https://picsum.photos/id/355/500/500",
     title: "Projector",
     description:
       "HD projector voor presentaties of filmavonden. Inclusief scherm en kabels.",
