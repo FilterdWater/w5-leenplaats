@@ -1,4 +1,3 @@
-import { Button } from "@/js/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,8 +7,8 @@ import {
   CardTitle,
 } from "@/js/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/js/components/ui/avatar";
-import { Bookmark, BookmarkCheck } from "lucide-react";
 import { Badge } from "@/js/components/ui/badge";
+import { BookmarkButton } from "@/js/components/bookmark-button";
 import type { Advertisement } from "../models/advertisement";
 import type { User } from "@/js/models/user";
 
@@ -60,27 +59,14 @@ export function AdvertisementCard({
           </div>
 
           {/* Bookmark Button, only show when unavailable */}
-          {!isAvailable && (
-            <Button
-              className="absolute hover:scale-110 top-3 right-3 rounded-full size-9 border-0 transition-all hover:bg-background"
-              variant="secondary"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onBookmark?.();
-              }}
-              title={
-                isBookmarked
-                  ? "Verwijder van wachtlijst"
-                  : "Voeg toe aan wachtlijst"
-              }
-            >
-              {isBookmarked ? (
-                <BookmarkCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-              ) : (
-                <Bookmark className="h-4 w-4 text-foreground" />
-              )}
-            </Button>
+          {!isAvailable && onBookmark && (
+            <div className="absolute top-3 right-3">
+              <BookmarkButton
+                isBookmarked={isBookmarked}
+                onToggle={onBookmark}
+                variant="icon"
+              />
+            </div>
           )}
         </div>
       </CardHeader>
