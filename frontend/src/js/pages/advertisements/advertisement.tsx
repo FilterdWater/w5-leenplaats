@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router";
 import { useDocumentTitle } from "@/js/hooks/use-document-title";
 import { AppLayout } from "@/js/layouts/app-layout";
 import type { BreadcrumbItem } from "@/js/types/app-layout";
 import { Heading } from "@/js/components/heading";
 import { Button } from "@/js/components/ui/button";
+import { BookmarkButton } from "@/js/components/bookmark-button";
 import { ArrowLeft, Calendar, MapPin, Tag } from "lucide-react";
 import { Badge } from "@/js/components/ui/badge";
 import {
@@ -24,6 +26,25 @@ export function Advertisement() {
   const isAvailable = advertisementId
     ? sampleAvailabilityStatus[advertisementId] ?? true
     : true;
+
+  // State to track if this advertisement is bookmarked
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+
+  const handleBookmark = () => {
+    setIsBookmarked((prev) => {
+      const newState = !prev;
+      if (newState) {
+        console.log(
+          `Added to notification list: advertisement ${advertisementId}`
+        );
+      } else {
+        console.log(
+          `Removed from notification list: advertisement ${advertisementId}`
+        );
+      }
+      return newState;
+    });
+  };
 
   // If advertisement not found, show error
   if (!data) {
@@ -158,9 +179,22 @@ export function Advertisement() {
 
             {/* Action buttons */}
             <div className="space-y-3">
-              <Button className="w-full" size="lg">
-                Huren
-              </Button>
+              {isAvailable ? (
+                <Button className="w-full" size="lg">
+                  Huren
+                </Button>
+              ) : (
+                <div className="flex gap-3">
+                  <Button className="flex-1" size="lg" disabled>
+                    Niet beschikbaar
+                  </Button>
+                  <BookmarkButton
+                    isBookmarked={isBookmarked}
+                    onToggle={handleBookmark}
+                    variant="full"
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
