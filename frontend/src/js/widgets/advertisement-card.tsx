@@ -11,6 +11,7 @@ import { Badge } from "@/js/components/ui/badge";
 import { BookmarkButton } from "@/js/components/bookmark-button";
 import type { Advertisement } from "../models/advertisement";
 import type { User } from "@/js/models/user";
+import { Link } from "react-router";
 
 type AdvertisementCardProps = {
   advertisement: Advertisement;
