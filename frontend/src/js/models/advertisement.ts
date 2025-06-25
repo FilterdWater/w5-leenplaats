@@ -16,6 +16,16 @@ export interface Advertisement {
   categories?: Category[];
 }
 
+export interface AdvertisementDTO {
+  title: string;
+  description?: string;
+  price: number;
+  userId: number;
+  rentedBy?: number;
+  rentedAt?: Date;
+  rentedUntil?: Date;
+}
+
 export function advertisementToJSON(ad: Advertisement) {
   return {
     id: ad.id,

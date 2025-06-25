@@ -16,7 +16,15 @@ class AdvertisementController extends Controller
 
     public function store(Request $request)
     {
-        $ad = Advertisement::create($request->all());
+        $validated = $request->validate([
+            'title' => 'required|string|max:100',
+            'description' => 'required|string|max:500',
+            'price' => 'required|numeric|min:0.01',
+            'user_id' => 'required|integer|exists:users,id',
+        ]);
+
+        $ad = Advertisement::create($validated);
+
         return response()->json($ad, 201);
     }
 
