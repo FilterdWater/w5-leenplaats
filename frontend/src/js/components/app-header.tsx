@@ -164,7 +164,10 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="size-10 rounded-full p-1">
                     <Avatar className="size-8 overflow-hidden rounded-full">
-                      <AvatarImage src={user?.avatar} alt={user?.first_name} />
+                      <AvatarImage
+                        src={user?.profile_picture}
+                        alt={user?.first_name}
+                      />
                       <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
                         {user?.first_name ? getInitials(user.first_name) : "U"}
                       </AvatarFallback>

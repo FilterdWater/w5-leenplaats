@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Advertisement;
+use Illuminate\Support\Facades\Auth;
+
 
 class AdvertisementController extends Controller
 {
@@ -20,8 +22,9 @@ class AdvertisementController extends Controller
             'title' => 'required|string|max:100',
             'description' => 'required|string|max:500',
             'price' => 'required|numeric|min:0.01',
-            'user_id' => 'required|integer|exists:users,id',
         ]);
+
+        $validated['user_id'] = Auth::id();
 
         $ad = Advertisement::create($validated);
 

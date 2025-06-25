@@ -27,7 +27,6 @@ export async function handleCreateAdvertisement(
     title: values.title,
     description: values.description,
     price: values.pricePerDay,
-    userId: user?.id,
   };
 
   const result = await createAdvertisement(advertisement);

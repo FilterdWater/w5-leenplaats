@@ -17,7 +17,10 @@ export async function createAdvertisement(
 ): Promise<ApiResponse> {
   try {
     console.log("Advertisement:", ad);
-    console.log(localStorage.getItem("token"));
+
+    const token = localStorage.getItem("token");
+
+    console.log(token);
 
     const response = await fetch("http://localhost:80/api/advertisements", {
       method: "POST",

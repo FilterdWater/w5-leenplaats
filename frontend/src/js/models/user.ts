@@ -7,11 +7,12 @@ export interface User {
   city: string;
   profile_picture: string;
   email: string;
-  email_verfied_at?: boolean;
+  email_verified_at?: boolean;
   password: string;
   remember_token?: string;
   created_at?: Date;
   updated_at?: Date;
+  [key: string]: unknown; // This allows for additional properties...
 }
 
 export interface UserDTO {

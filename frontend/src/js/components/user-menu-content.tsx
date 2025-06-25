@@ -6,10 +6,10 @@ import {
 } from "@/js/components/ui/dropdown-menu";
 import { UserInfo } from "@/js/components/user-info";
 import { useMobileNavigation } from "@/js/hooks/use-mobile-navigation";
-import { type User } from "@/js/types/app-layout";
 import { useNavigate } from "react-router";
 import { LogOut, Settings } from "lucide-react";
 import { useUser } from "@/js/context/UserContext";
+import type { User } from "../models/user";
 
 interface UserMenuContentProps {
   user: User;
