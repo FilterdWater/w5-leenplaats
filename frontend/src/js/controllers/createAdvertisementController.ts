@@ -2,7 +2,7 @@ import type { UseFormReturn } from "react-hook-form";
 import type { CreateAdvertisementForm } from "../schemas/createAdvertisementSchema";
 import type { AdvertisementDTO } from "../models/advertisement";
 import { createAdvertisement } from "../services/advertisementService";
-import type { User } from "../models/user";
+import type { User } from "@/js/models/user";
 
 export async function handleCreateAdvertisement(
   values: CreateAdvertisementForm,

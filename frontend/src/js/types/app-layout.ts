@@ -1,5 +1,5 @@
 import { type LucideIcon } from "lucide-react";
-import type { User } from "../models/user";
+import type { User } from "@/js/models/user";
 // import type { Config } from "ziggy-js";
 
 export interface Auth {
