@@ -9,7 +9,7 @@ export interface Advertisement {
   rentedBy?: number;
   rentedAt?: Date;
   rentedUntil?: Date;
-  createdAt: Date;
+  created_at: Date;
   updatedAt?: Date;
 
   imageUrl?: string;
