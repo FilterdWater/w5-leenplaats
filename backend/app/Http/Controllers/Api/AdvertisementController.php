@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Advertisement;
+use Illuminate\Support\Facades\Auth;
+
 
 class AdvertisementController extends Controller
 {
@@ -16,7 +18,16 @@ class AdvertisementController extends Controller
 
     public function store(Request $request)
     {
-        $ad = Advertisement::create($request->all());
+        $validated = $request->validate([
+            'title' => 'required|string|max:100',
+            'description' => 'required|string|max:500',
+            'price' => 'required|numeric|min:0.01',
+        ]);
+
+        $validated['user_id'] = Auth::id();
+
+        $ad = Advertisement::create($validated);
+
         return response()->json($ad, 201);
     }
 

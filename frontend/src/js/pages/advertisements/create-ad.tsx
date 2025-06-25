@@ -24,8 +24,14 @@ import {
 } from "@/js/components/ui/tooltip";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { HelpCircle } from "lucide-react";
+import { HelpCircle, LoaderCircle } from "lucide-react";
+import {
+  createAdvertisementSchema,
+  type CreateAdvertisementForm,
+} from "@/js/schemas/createAdvertisementSchema";
+import { handleCreateAdvertisement } from "@/js/controllers/createAdvertisementController";
+import { useNavigate } from "react-router";
+import { useUser } from "@/js/context/UserContext";
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -34,61 +40,12 @@ const breadcrumbs: BreadcrumbItem[] = [
   },
 ];
 
-// Define the form schema
-const formSchema = z.object({
-  title: z
-    .string()
-    .min(1, {
-      message: "Title is required.",
-    })
-    .max(100, {
-      message: "Title must be less than 100 characters.",
-    }),
-  description: z
-    .string()
-    .min(10, {
-      message: "Description must be at least 10 characters.",
-    })
-    .max(500, {
-      message: "Description must be less than 500 characters.",
-    }),
-  pricePerDay: z
-    .string()
-    .min(1, {
-      message: "Price per day is required.",
-    })
-    .refine(
-      (val) => {
-        const num = parseFloat(val);
-        return !isNaN(num) && num > 0;
-      },
-      {
-        message: "Please enter a valid positive number.",
-      }
-    ),
-  lenderName: z
-    .string()
-    .min(1, {
-      message: "Lender name is required.",
-    })
-    .max(50, {
-      message: "Lender name must be less than 50 characters.",
-    }),
-  location: z
-    .string()
-    .min(1, {
-      message: "Location is required.",
-    })
-    .max(100, {
-      message: "Location must be less than 100 characters.",
-    }),
-});
-
-type FormData = z.infer<typeof formSchema>;
-
 export function CreateAd() {
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imageError, setImageError] = useState<string>("");
+  const { user } = useUser();
 
   useDocumentTitle(
     "Create advertisement",
@@ -96,14 +53,12 @@ export function CreateAd() {
   );
 
   // Initialize the form
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<CreateAdvertisementForm>({
+    resolver: zodResolver(createAdvertisementSchema),
     defaultValues: {
       title: "",
       description: "",
-      pricePerDay: "",
-      lenderName: "",
-      location: "",
+      pricePerDay: 0,
     },
   });
 
@@ -116,32 +71,6 @@ export function CreateAd() {
     console.log("Selected image:", file);
   };
 
-  // Submit handler
-  const onSubmit = (values: FormData) => {
-    // Validate image is selected
-    if (!selectedImage) {
-      setImageError("Please select an image for your advertisement");
-      return;
-    }
-
-    console.log("Form submitted with values:", values);
-    console.log("Selected image:", selectedImage);
-
-    // Here you would typically send the data to your API
-    // Example:
-    // const formData = new FormData();
-    // Object.entries(values).forEach(([key, value]) => {
-    //   formData.append(key, value);
-    // });
-    // if (selectedImage) {
-    //   formData.append('image', selectedImage);
-    // }
-    // await submitAdvertisement(formData);
-
-    // For now, just show an alert
-    alert("Advertisement created successfully!");
-  };
-
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <AdvertisementsLayout>
@@ -152,7 +81,18 @@ export function CreateAd() {
 
         <TooltipProvider>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form
+              onSubmit={form.handleSubmit((values) =>
+                handleCreateAdvertisement(
+                  values,
+                  form,
+                  setIsLoading,
+                  navigate,
+                  user
+                )
+              )}
+              className="space-y-6"
+            >
               {/* Image Upload */}
               <div>
                 <div className="flex items-center gap-2 mb-3">
@@ -262,6 +202,7 @@ export function CreateAd() {
                         min="0"
                         placeholder="0.00"
                         {...field}
+                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -269,66 +210,13 @@ export function CreateAd() {
                 )}
               />
 
-              {/* Lender Name Field */}
-              {/* <FormField
-                control={form.control}
-                name="lenderName"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center gap-2">
-                      <FormLabel>Lender Name</FormLabel>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>This is how borrowers will know who to contact</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                    <FormControl>
-                      <Input
-                        placeholder="Your name or business name"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
-
-              {/* Location Field */}
-              {/* <FormField
-                control={form.control}
-                name="location"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center gap-2">
-                      <FormLabel>Location</FormLabel>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Help borrowers find items near them</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                    <FormControl>
-                      <Input
-                        placeholder="City, State or general area"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
-
               {/* Submit Button */}
               <div className="flex gap-4 pt-4">
-                <Button type="submit" className="flex-1">
-                  Create Advertisement
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading && (
+                    <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Create advertisement
                 </Button>
                 <Button
                   type="button"

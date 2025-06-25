@@ -3,7 +3,7 @@ import type { Category } from "./category";
 export interface Advertisement {
   id: number;
   title: string;
-  description?: string;
+  description: string;
   price: number;
   userId: number;
   rentedBy?: number;
@@ -14,6 +14,15 @@ export interface Advertisement {
 
   imageUrl?: string;
   categories?: Category[];
+}
+
+export interface AdvertisementDTO {
+  title: string;
+  description: string;
+  price: number;
+  rentedBy?: number;
+  rentedAt?: Date;
+  rentedUntil?: Date;
 }
 
 export function advertisementToJSON(ad: Advertisement) {

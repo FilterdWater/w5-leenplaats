@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/js/components/ui/avatar";
 import { Bookmark } from "lucide-react";
 import { Badge } from "@/js/components/ui/badge";
 import type { Advertisement } from "../models/advertisement";
-import type { User } from "../models/user";
+import type { User } from "@/js/models/user";
 
 type AdvertisementCardProps = {
   advertisement: Advertisement;

@@ -11,13 +11,21 @@ use Illuminate\Support\Facades\Route;
 // Auth
 Route::post('/login', [AuthController::class, 'login']);
 
+// Need Token to access
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+
+    // User
     Route::put('/profile/update', [UserController::class, 'update']);
     Route::put('/password/update', [UserController::class, 'updatePassword']);
     Route::delete('/profile/delete', [UserController::class, 'destroy']);
+
+    // Advertisement
+    Route::post('/advertisements', [AdvertisementController::class, 'store']);
+    Route::put('/advertisements/{advertisement}', [AdvertisementController::class, 'update']);
+    Route::delete('/advertisements/{advertisement}', [AdvertisementController::class, 'destroy']);
 });
 
 Route::get('/user', function (Request $request) {
@@ -44,7 +52,8 @@ Route::apiResource('users', UserController::class);
 Route::get('/users/email/{email}', [UserController::class, 'emailExists']);
 
 // Advertisement
-Route::apiResource('advertisements', AdvertisementController::class);
+Route::get('/advertisements', [AdvertisementController::class, 'index']);
+Route::get('/advertisements/{advertisement}', [AdvertisementController::class, 'show']);
 
 // Category
 Route::apiResource('categories', CategoryController::class);

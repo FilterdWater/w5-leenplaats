@@ -1,4 +1,5 @@
 import { type LucideIcon } from "lucide-react";
+import type { User } from "@/js/models/user";
 // import type { Config } from "ziggy-js";
 
 export interface Auth {
@@ -29,19 +30,4 @@ export interface SharedData {
   //   ziggy: Config & { location: string };
   sidebarOpen: boolean;
   [key: string]: unknown;
-}
-
-export interface User {
-  id: number;
-  first_name: string;
-  last_name: string;
-  address: string;
-  zipcode: string;
-  city: string;
-  email: string;
-  avatar?: string;
-  email_verified_at: string | null;
-  created_at: string;
-  updated_at: string;
-  [key: string]: unknown; // This allows for additional properties...
 }
