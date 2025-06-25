@@ -64,10 +64,10 @@ export function Advertisement() {
     return (
       <AppLayout breadcrumbs={[]}>
         <div className="container mx-auto px-4 py-6 text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+          <h1 className="text-2xl font-bold text-foreground mb-4">
             Advertentie niet gevonden
           </h1>
-          <p className="text-gray-600 mb-6">
+          <p className="text-muted-foreground mb-6">
             De advertentie die je zoekt bestaat niet of is niet meer
             beschikbaar.
           </p>
@@ -160,7 +160,7 @@ export function Advertisement() {
                   <p className="font-medium">
                     {user.first_name} {user.last_name}
                   </p>
-                  <p className="text-sm text-gray-600 flex items-center">
+                  <p className="text-sm text-muted-foreground flex items-center">
                     <MapPin className="w-3 h-3 mr-1" />
                     {user.city}
                   </p>
@@ -168,10 +168,10 @@ export function Advertisement() {
               </div>
             </div>
 
-            <div className="text-sm text-gray-500 flex items-center">
+            <div className="text-sm text-muted-foreground flex items-center">
               <Calendar className="w-4 h-4 mr-2" />
               Geplaatst op{" "}
-              {new Date(advertisement.createdAt).toLocaleDateString("nl-NL")}
+              {new Date(advertisement.created_at).toLocaleDateString("nl-NL")}
             </div>
 
             <div className="space-y-3">
