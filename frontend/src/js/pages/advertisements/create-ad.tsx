@@ -52,20 +52,18 @@ const formSchema = z.object({
     .max(500, {
       message: "Description must be less than 500 characters.",
     }),
-  pricePerDay: z
-    .string()
-    .min(1, {
-      message: "Price per day is required.",
-    })
-    .refine(
-      (val) => {
-        const num = parseFloat(val);
-        return !isNaN(num) && num > 0;
-      },
-      {
-        message: "Please enter a valid positive number.",
-      }
-    ),
+  pricePerDay: z.string().min(1, {
+    message: "Price per day is required.",
+  }),
+  // .refine(
+  //   (val) => {
+  //     const num = parseFloat(val);
+  //     return !isNaN(num) && num > 0;
+  //   },
+  //   {
+  //     message: "Please enter a valid positive number.",
+  //   }
+  // ),
 });
 
 type FormData = z.infer<typeof formSchema>;
