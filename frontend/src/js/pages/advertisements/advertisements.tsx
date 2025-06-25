@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDocumentTitle } from "@/js/hooks/use-document-title";
 import { AppLayout } from "@/js/layouts/app-layout";
 import type { BreadcrumbItem } from "@/js/types/app-layout";
@@ -6,11 +6,11 @@ import { AdvertisementCard } from "@/js/widgets/advertisement-card";
 import { Heading } from "@/js/components/heading";
 import { Button } from "@/js/components/ui/button";
 import { Link } from "react-router";
-import {
-  sampleAdvertisements,
-  sampleAvailabilityStatus,
-  getUserById,
-} from "@/js/dummy-data/ad-data";
+import { fetchAdvertisements } from "@/js/services/advertisementService";
+import { fetchUsers } from "@/js/services/userService";
+import type { Advertisement } from "@/js/models/advertisement";
+import type { User } from "@/js/models/user";
+import { sampleAvailabilityStatus } from "@/js/dummy-data/ad-data";
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -25,10 +25,31 @@ export function Advertisements() {
     "On this page you can view everything people have made available to lend"
   );
 
-  // State to track bookmarked advertisements
+  const [advertisements, setAdvertisements] = useState<Advertisement[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
   const [bookmarkedItems, setBookmarkedItems] = useState<Set<number>>(
     new Set()
   );
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [ads, fetchedUsers] = await Promise.all([
+          fetchAdvertisements(),
+          fetchUsers(),
+        ]);
+        setAdvertisements(ads);
+        setUsers(fetchedUsers);
+      } catch (err) {
+        console.error("Data fetch failed:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadData();
+  }, []);
 
   const handleBookmark = (advertisementId: number) => {
     setBookmarkedItems((prev) => {
@@ -49,24 +70,27 @@ export function Advertisements() {
   };
 
   return (
-    <>
-      <AppLayout breadcrumbs={breadcrumbs}>
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex justify-end">
-            <Button asChild>
-              <Link to="create">Create Ad</Link>
-            </Button>
-          </div>
-          <div className="mb-8">
-            <Heading
-              title="Beschikbare Items"
-              description="Ontdek wat anderen beschikbaar hebben gesteld om te lenen"
-            />
-          </div>
+    <AppLayout breadcrumbs={breadcrumbs}>
+      <div className="container mx-auto px-4 py-6">
+        <div className="flex justify-end">
+          <Button asChild>
+            <Link to="create">Create Ad</Link>
+          </Button>
+        </div>
+        <div className="mb-8">
+          <Heading
+            title="Beschikbare Items"
+            description="Ontdek wat anderen beschikbaar hebben gesteld om te lenen"
+          />
+        </div>
 
+        {loading ? (
+          <div>Loading...</div>
+        ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {sampleAdvertisements.map((advertisement) => {
-              const user = getUserById(advertisement.userId);
+            {advertisements.map((advertisement) => {
+              const user = users.find((u) => u.id === advertisement.user_id);
+
               if (!user) return null;
 
               const isAvailable =
@@ -84,8 +108,8 @@ export function Advertisements() {
               );
             })}
           </div>
-        </div>
-      </AppLayout>
-    </>
+        )}
+      </div>
+    </AppLayout>
   );
 }
