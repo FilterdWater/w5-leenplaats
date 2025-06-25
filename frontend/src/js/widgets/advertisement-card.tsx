@@ -1,4 +1,3 @@
-import { Button } from "@/js/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,93 +7,142 @@ import {
   CardTitle,
 } from "@/js/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/js/components/ui/avatar";
-import { Bookmark } from "lucide-react";
 import { Badge } from "@/js/components/ui/badge";
+import { BookmarkButton } from "@/js/components/bookmark-button";
 import type { Advertisement } from "../models/advertisement";
 import type { User } from "@/js/models/user";
 
 type AdvertisementCardProps = {
   advertisement: Advertisement;
   user: User;
+  isBookmarked?: boolean;
   onBookmark?: () => void;
+  isAvailable?: boolean;
 };
 
 export function AdvertisementCard({
   advertisement,
   user,
+  isBookmarked = false,
   onBookmark,
+  isAvailable = true,
 }: AdvertisementCardProps) {
-  const { imageUrl, title, description, categories, price } = advertisement;
+  const { title, description, categories, price } = advertisement;
   const { first_name, last_name, profile_picture } = user;
+
   return (
-    <Card className="w-full max-w-sm rounded-2xl shadow-md p-0 gap-0 z-0 overflow-hidden">
-      <CardHeader className="p-0 gap-0">
-        <img
-          src={imageUrl}
-          alt={title}
-          className="w-full h-48 object-contain bg-gray-50"
-        />
+    <Card className="group w-full max-w-sm bg-card transition-all duration-300 ease-in-out transform hover:-translate-y-1 border-0 overflow-hidden p-0">
+      {/* Image Header */}
+      <CardHeader className="p-0 relative overflow-hidden">
+        <div className="relative h-52 bg-muted">
+          <Link to={`/advertisements/${advertisement.id}`}>
+            <img
+              src={advertisement.imageUrl}
+              alt={advertisement.title}
+              className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
+                !isAvailable ? "grayscale opacity-60" : ""
+              }`}
+            />
+          </Link>
+
+          {/* Availability Badge */}
+          <div className="absolute top-3 left-3">
+            {isAvailable ? (
+              <div className="bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
+                Beschikbaar
+              </div>
+            ) : (
+              <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
+                Niet beschikbaar
+              </div>
+            )}
+          </div>
+
+          {/* Bookmark Button, only show when unavailable */}
+          {!isAvailable && onBookmark && (
+            <div className="absolute top-3 right-3">
+              <BookmarkButton
+                isBookmarked={isBookmarked}
+                onToggle={onBookmark}
+                variant="icon"
+              />
+            </div>
+          )}
+        </div>
       </CardHeader>
 
-      <CardContent className="pl-3.5 pr-2.5 pt-2 rounded-t-2xl shadow -mt-2 z-10 bg-zinc-50 border-t-2">
-        {/* Title & description */}
-        <div className="flex justify-between items-start">
-          <CardTitle className="text-lg">{title}</CardTitle>
-
-          {/* BookmarkButton */}
-          <Button
-            className="rounded-full size-8 border-2"
-            variant="secondary"
-            onClick={onBookmark}
-          >
-            <Bookmark />
-          </Button>
+      {/* Content Section */}
+      <CardContent className="p-5 space-y-4">
+        {/* Title */}
+        <div>
+          <CardTitle className="text-xl font-bold text-card-foreground line-clamp-2 leading-tight pb-2">
+            {title}
+          </CardTitle>
+          <CardDescription className="text-muted-foreground mt-2 line-clamp-2 text-sm leading-relaxed">
+            {description}
+          </CardDescription>
         </div>
-        <CardDescription className="text-sm">{description}</CardDescription>
 
-        {/* Category */}
-        <div className="flex flex-wrap gap-2 mt-2">
-          {categories?.map((cat) => (
-            <Badge key={cat.id}>{cat.name}</Badge>
+        {/* Categories */}
+        <div className="flex flex-wrap gap-1.5">
+          {categories?.slice(0, 3).map((cat) => (
+            <Badge
+              key={cat.id}
+              variant="secondary"
+              className="text-xs px-2.5 py-0.5 font-medium bg-secondary text-secondary-foreground hover:bg-secondary/80"
+            >
+              {cat.name}
+            </Badge>
           ))}
+          {categories && categories.length > 3 && (
+            <Badge
+              variant="secondary"
+              className="text-xs px-2.5 py-0.5 font-medium bg-secondary text-secondary-foreground hover:bg-secondary/80"
+            >
+              +{categories.length - 3}
+            </Badge>
+          )}
         </div>
       </CardContent>
 
-      <CardFooter className="flex items-center gap-3 px-4 py-4 z-10 bg-zinc-50">
-        <Avatar>
-          <AvatarImage src={profile_picture} alt="Profile Picture" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
-        <div className="flex justify-between items-start w-full">
-          <div>
-            <p className="font-semibold">
-              Gepost door {first_name} {last_name}
-            </p>
+      {/* Footer */}
+      <CardFooter className="px-5 py-4 bg-muted/50 border-t border-border">
+        <div className="flex items-center justify-between w-full gap-3">
+          {/* User Info */}
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <Avatar className="size-8 flex-shrink-0">
+              <AvatarImage src={profile_picture} alt="Profile Picture" />
+              <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-primary-foreground text-xs font-semibold">
+                {first_name.charAt(0)}
+                {last_name.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium text-card-foreground truncate">
+                {first_name} {last_name}
+              </p>
+            </div>
           </div>
-          <p className="text-green-600 font-semibold text-base">
-            € {price}/ Dag
-          </p>
+
+          {/* Price */}
+          <div className="text-right flex-shrink-0">
+            <div className="flex items-baseline gap-1">
+              <span
+                className={`text-2xl font-bold ${
+                  isAvailable
+                    ? "text-emerald-600 dark:text-emerald-400"
+                    : "text-muted-foreground"
+                }`}
+              >
+                €{price}
+              </span>
+              <span className="text-sm text-muted-foreground font-medium">
+                /dag
+              </span>
+            </div>
+          </div>
         </div>
       </CardFooter>
     </Card>
   );
 }
-
-// const getBadgeVariant = (name: string) => {
-//   switch (name.toLowerCase()) {
-//     case "sale":
-//       return "destructive";
-//     case "nieuw":
-//       return "default";
-//     case "voorraad":
-//       return "secondary";
-//     default:
-//       return "outline";
-//   }
-// };
-
-// {categories?.map(cat => (
-//   <Badge key={cat.id} variant={getBadgeVariant(cat.name)}>
-//     {cat.name}
-//   </Badge>
-// ))}

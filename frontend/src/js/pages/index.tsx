@@ -249,7 +249,7 @@ export function Index() {
 
                 {/* GNU/Linux */}
                 <Card className="p-8 flex flex-col items-center justify-center space-y-4 hover:shadow-lg transition-all duration-300">
-                  <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-orange-600 rounded-2xl flex items-center justify-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-red-400 to-orange-600 rounded-2xl flex items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="w-10 h-10 text-white"
@@ -367,7 +367,7 @@ export function Index() {
               </div>
               <div className="flex flex-col gap-4 sm:flex-row">
                 <Button size="lg" asChild>
-                  <Link to="sign-up">Aanmelden</Link>
+                  <Link to="auth/sign-up">Aanmelden</Link>
                 </Button>
                 <Button variant="outline" size="lg" asChild>
                   <Link to="more-info">Meer informatie</Link>

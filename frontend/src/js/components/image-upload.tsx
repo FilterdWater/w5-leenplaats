@@ -37,15 +37,21 @@ export const ImageUpload = ({ onImageSelect }: ImageUploadProps) => {
     }
   };
 
-  const openFileSystem = () => {
+  const openFileSystem = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent any form submission
+    e.stopPropagation(); // Stop event bubbling
     fileInputRef.current?.click();
   };
 
-  const openCamera = () => {
+  const openCamera = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent any form submission
+    e.stopPropagation(); // Stop event bubbling
     cameraInputRef.current?.click();
   };
 
-  const removeImage = () => {
+  const removeImage = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent any form submission
+    e.stopPropagation(); // Stop event bubbling
     setSelectedImage(null);
     setImagePreview(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -66,8 +72,9 @@ export const ImageUpload = ({ onImageSelect }: ImageUploadProps) => {
               alt="Selected product"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-black/0 hover:bg-black/20 transition-all duration-200 flex items-center justify-center opacity-0 hover:opacity-100">
+            <div className="absolute inset-0 bg-black/20 md:bg-black/0 md:hover:bg-black/20 transition-all duration-200 flex items-center justify-center md:opacity-0 md:hover:opacity-100">
               <button
+                type="button"
                 onClick={removeImage}
                 className="bg-destructive hover:bg-destructive/90 text-destructive-foreground p-3 rounded-full transition-colors shadow-lg"
                 aria-label="Remove image"
@@ -79,6 +86,7 @@ export const ImageUpload = ({ onImageSelect }: ImageUploadProps) => {
             {/* Replace button in corner */}
             <div className="absolute top-4 right-4">
               <button
+                type="button"
                 onClick={openCamera}
                 className="bg-background/90 hover:bg-background text-foreground p-2 rounded-full transition-colors shadow-lg border border-border"
                 aria-label="Take new photo"
@@ -95,23 +103,30 @@ export const ImageUpload = ({ onImageSelect }: ImageUploadProps) => {
               <p className="text-lg font-medium text-foreground">
                 Add a photo of your product
               </p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm block md:hidden text-muted-foreground">
                 Take a photo or choose from your gallery
+              </p>
+              <p className="text-sm hidden md:block text-muted-foreground">
+                Choose from your files
               </p>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-sm">
               <button
+                type="button"
                 onClick={openCamera}
-                className="flex items-center justify-center gap-3 px-6 py-3 bg-primary text-primary-foreground rounded-[var(--radius)] hover:bg-primary/90 transition-colors w-full sm:w-auto font-medium"
+                className="flex md:hidden items-center justify-center gap-3 px-6 py-3 bg-primary text-primary-foreground rounded-[var(--radius)] hover:bg-primary/90 transition-colors w-full sm:w-auto font-medium"
               >
                 <Camera size={20} />
                 Take Photo
               </button>
 
-              <div className="text-muted-foreground text-sm">or</div>
+              <div className="text-muted-foreground text-sm block sm:hidden">
+                or
+              </div>
 
               <button
+                type="button"
                 onClick={openFileSystem}
                 className="flex items-center justify-center gap-3 px-6 py-3 bg-secondary text-secondary-foreground rounded-[var(--radius)] hover:bg-secondary/80 transition-colors w-full sm:w-auto font-medium"
               >
