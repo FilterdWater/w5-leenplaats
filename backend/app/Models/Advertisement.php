@@ -2,22 +2,37 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Advertisement extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'title',
         'description',
         'price',
         'user_id',
-        'rented_by',
-        'rented_at',
-        'rented_until',
+        'picture_link',
     ];
 
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'advertisement_has_categories', 'advertisement_id', 'category_id');
+    }
+
+    protected $casts = [
+        'price' => 'decimal:2',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function pictures()
+    {
+        return $this->belongsToMany(Picture::class, 'advertisement_has_pictures');
     }
 }
