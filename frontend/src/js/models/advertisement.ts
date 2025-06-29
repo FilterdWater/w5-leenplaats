@@ -1,4 +1,5 @@
 import type { Category } from "./category";
+import type { Picture } from "./picture";
 
 export interface Advertisement {
   id: number;
@@ -6,13 +7,9 @@ export interface Advertisement {
   description: string;
   price: number;
   user_id: number;
-  rentedBy?: number;
-  rentedAt?: Date;
-  rentedUntil?: Date;
-  created_at: Date;
-  updatedAt?: Date;
-
-  imageUrl?: string;
+  created_at: string;
+  updated_at: string;
+  pictures?: Picture[]; // Related pictures
   categories?: Category[];
 }
 
@@ -24,4 +21,5 @@ export interface AdvertisementDTO {
   rentedAt?: Date;
   rentedUntil?: Date;
   categories?: number[];
+  pictures?: string[];
 }

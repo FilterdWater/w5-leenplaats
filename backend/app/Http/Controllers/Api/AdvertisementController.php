@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\Models\Advertisement;
 use Illuminate\Support\Facades\Auth;
 
-
 class AdvertisementController extends Controller
 {
     public function index()
@@ -25,32 +24,26 @@ class AdvertisementController extends Controller
             'price' => 'required|numeric|min:0.01',
             'categories' => 'required|array|min:1',
             'categories.*' => 'integer|exists:categories,id',
+            'pictures' => 'required|array|min:1', // Match your frontend field name
+            'pictures.*' => 'required|string', // Each image should be a base64 string
         ]);
 
-        $ad = Advertisement::create([
-            'title' => $validated['title'],
-            'description' => $validated['description'],
-            'price' => $validated['price'],
-            'user_id' => auth()->id(),
-        ]);
+        foreach ($validated['pictures'] as $index => $image) {
+            if (!$this->isValidBase64Image($image)) {
+                return response()->json([
+                    'message' => 'Invalid image format',
+                    'errors' => [
+                        "pictures.{$index}" => ['The image must be a valid base64 encoded image']
+                    ]
+                ], 422);
+            }
+        }
 
-        $ad->categories()->sync($validated['categories']);
+        $validated['picture_link'] = $validated['pictures'][0];
+        $validated['user_id'] = Auth::id();
 
-        return response()->json($ad->load('categories'), 201);
-    }
-
-
-    public function attachCategories(Request $request, $advertisementId)
-    {
-        $request->validate([
-            'category_ids' => 'required|array',
-            'category_ids.*' => 'exists:categories,id',
-        ]);
-
-        $advertisement = Advertisement::findOrFail($advertisementId);
-
-        // Koppelt de categorieën (vervangt bestaande koppelingen)
-        $advertisement->categories()->sync($request->category_ids);
+        $ad = Advertisement::create($validated);
+        unset($validated['pictures']);
 
         return response()->json([
             'message' => 'Categories attached successfully.',
@@ -72,8 +65,35 @@ class AdvertisementController extends Controller
     public function update(Request $request, $id)
     {
         $ad = Advertisement::findOrFail($id);
-        $ad->update($request->all());
-        return $ad;
+
+        $validated = $request->validate([
+            'title' => 'sometimes|string|max:100',
+            'description' => 'sometimes|string|max:500',
+            'price' => 'sometimes|numeric|min:0.01',
+            'pictures' => 'sometimes|array|min:1',
+            'pictures.*' => 'sometimes|string',
+        ]);
+
+        // Validate images if they're being updated
+        if (isset($validated['pictures'])) {
+            foreach ($validated['pictures'] as $index => $image) {
+                if (!$this->isValidBase64Image($image)) {
+                    return response()->json([
+                        'message' => 'Invalid image format',
+                        'errors' => [
+                            "pictures.{$index}" => ['The image must be a valid base64 encoded image']
+                        ]
+                    ], 422);
+                }
+            }
+
+            // Update picture_link with first image
+            $validated['picture_link'] = $validated['pictures'][0];
+            unset($validated['pictures']);
+        }
+
+        $ad->update($validated);
+        return response()->json($ad);
     }
 
     public function destroy($id)
@@ -81,5 +101,25 @@ class AdvertisementController extends Controller
         Advertisement::destroy($id);
         return response()->noContent();
     }
-}
 
+    /**
+     * Validate if the provided string is a valid base64 image
+     */
+    private function isValidBase64Image($base64String)
+    {
+        // Check if it starts with data:image/
+        if (!preg_match('/^data:image\/[a-zA-Z]+;base64,/', $base64String)) {
+            return false;
+        }
+
+        // Extract the base64 part
+        $base64Data = preg_replace('/^data:image\/[a-zA-Z]+;base64,/', '', $base64String);
+
+        // Check if it's valid base64
+        if (!base64_decode($base64Data, true)) {
+            return false;
+        }
+
+        return true;
+    }
+}
