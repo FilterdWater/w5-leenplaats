@@ -1,30 +1,15 @@
-import * as z from "zod";
+import { z } from "zod";
 
 export const createAdvertisementSchema = z.object({
   title: z
     .string()
-    .min(1, {
-      message: "Title is required.",
-    })
-    .max(100, {
-      message: "Title must be less than 100 characters.",
-    }),
+    .min(1, "Title is required")
+    .max(100, "Title must be less than 100 characters"),
   description: z
     .string()
-    .min(10, {
-      message: "Description must be at least 10 characters.",
-    })
-    .max(500, {
-      message: "Description must be less than 500 characters.",
-    }),
-  pricePerDay: z
-    .number({
-      required_error: "Price per day is required.",
-      invalid_type_error: "Please enter a number.",
-    })
-    .min(0.01, {
-      message: "Please enter a valid positive number.",
-    }),
+    .min(1, "Description is required")
+    .max(500, "Description must be less than 500 characters"),
+  pricePerDay: z.number().min(0.01, "Price must be at least 0.01"),
 });
 
 export type CreateAdvertisementForm = z.infer<typeof createAdvertisementSchema>;

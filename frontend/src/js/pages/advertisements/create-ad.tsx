@@ -4,7 +4,7 @@ import { AdvertisementsLayout } from "@/js/layouts/advertisements/layout";
 import { HeadingSmall } from "@/js/components/heading-small";
 import { type BreadcrumbItem } from "@/js/types/app-layout";
 import { useState } from "react";
-import { ImageUpload } from "@/js/components/image-upload";
+import { MultiImageUpload } from "@/js/components/image-upload";
 import { Input } from "@/js/components/ui/input";
 import { Button } from "@/js/components/ui/button";
 import { Textarea } from "@/js/components/ui/textarea";
@@ -43,7 +43,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export function CreateAd() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [imageError, setImageError] = useState<string>("");
   const { user } = useUser();
 
@@ -62,13 +62,37 @@ export function CreateAd() {
     },
   });
 
-  const handleImageSelect = (file: File | null) => {
-    setSelectedImage(file);
-    // Clear image error when an image is selected
-    if (file) {
+  const handleImagesSelect = (files: File[]) => {
+    setSelectedImages(files);
+    // Clear image error when images are selected
+    if (files.length > 0) {
       setImageError("");
     }
-    console.log("Selected image:", file);
+    console.log("Selected images:", files);
+  };
+
+  const onSubmit = async (values: CreateAdvertisementForm) => {
+    // Validate images are selected
+    if (selectedImages.length === 0) {
+      setImageError("Please select at least one image for your advertisement");
+      return;
+    }
+
+    await handleCreateAdvertisement(
+      values,
+      selectedImages,
+      form,
+      setIsLoading,
+      navigate,
+      user,
+      setImageError
+    );
+  };
+
+  const handleReset = () => {
+    form.reset();
+    setSelectedImages([]);
+    setImageError("");
   };
 
   return (
@@ -81,23 +105,12 @@ export function CreateAd() {
 
         <TooltipProvider>
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit((values) =>
-                handleCreateAdvertisement(
-                  values,
-                  form,
-                  setIsLoading,
-                  navigate,
-                  user
-                )
-              )}
-              className="space-y-6"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               {/* Image Upload */}
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <label className="block text-sm font-medium text-muted-foreground">
-                    Image
+                    Images *
                   </label>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -105,12 +118,13 @@ export function CreateAd() {
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>
-                        Upload a clear photo of your item to attract borrowers
+                        Upload clear photos of your item to attract borrowers
+                        (max 5 images)
                       </p>
                     </TooltipContent>
                   </Tooltip>
                 </div>
-                <ImageUpload onImageSelect={handleImageSelect} />
+                <MultiImageUpload onImagesSelect={handleImagesSelect} />
                 {imageError && (
                   <p className="text-sm text-destructive mt-2">{imageError}</p>
                 )}
@@ -216,11 +230,7 @@ export function CreateAd() {
                   )}
                   Create advertisement
                 </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => form.reset()}
-                >
+                <Button type="button" variant="outline" onClick={handleReset}>
                   Reset Form
                 </Button>
               </div>

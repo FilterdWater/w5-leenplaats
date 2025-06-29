@@ -6,46 +6,73 @@ import type { User } from "@/js/models/user";
 
 export async function handleCreateAdvertisement(
   values: CreateAdvertisementForm,
+  selectedImages: File[],
   form: UseFormReturn<CreateAdvertisementForm>,
   setIsLoading: (b: boolean) => void,
   navigate: (path: string, options?: { state?: any }) => void,
-  user: User | null
+  user: User | null,
+  setImageError: (error: string) => void
 ) {
   setIsLoading(true);
 
   const token = localStorage.getItem("token");
 
   if (!token || !user) {
-    setIsLoading(true);
+    setIsLoading(false);
     return {
       success: false,
       message: "User not authenticated.",
     };
   }
 
-  const advertisement: AdvertisementDTO = {
-    title: values.title,
-    description: values.description,
-    price: values.pricePerDay,
-  };
+  try {
+    // Validate image files
+    const maxFileSize = 5 * 1024 * 1024; // 5MB per file
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
-  const result = await createAdvertisement(advertisement);
+    for (const file of selectedImages) {
+      if (file.size > maxFileSize) {
+        setImageError(`File ${file.name} is too large. Maximum size is 5MB.`);
+        setIsLoading(false);
+        return;
+      }
 
-  if (result.success) {
-    form.reset();
-    navigate("/");
-  } else {
-    if (result.errors) {
-      Object.keys(result.errors).forEach((field) => {
-        form.setError(field as keyof CreateAdvertisementForm, {
-          message: result.errors?.[field][0],
-        });
-      });
-    } else {
-      form.setError("root", {
-        message: result.message ?? "Something went wrong",
-      });
+      if (!allowedTypes.includes(file.type)) {
+        setImageError(
+          `File ${file.name} has an invalid type. Only JPEG, PNG, and WebP are allowed.`
+        );
+        setIsLoading(false);
+        return;
+      }
     }
+
+    const advertisement = {
+      title: values.title,
+      description: values.description,
+      price: values.pricePerDay,
+    };
+
+    const result = await createAdvertisement(advertisement, selectedImages);
+
+    if (result.success) {
+      form.reset();
+      navigate("/");
+    } else {
+      if (result.errors) {
+        Object.keys(result.errors).forEach((field) => {
+          form.setError(field as keyof CreateAdvertisementForm, {
+            message: result.errors?.[field][0],
+          });
+        });
+      } else {
+        form.setError("root", {
+          message: result.message ?? "Something went wrong",
+        });
+      }
+    }
+  } catch (error) {
+    console.error("Error creating advertisement:", error);
+    setImageError("Failed to create advertisement. Please try again.");
   }
 
   setIsLoading(false);
