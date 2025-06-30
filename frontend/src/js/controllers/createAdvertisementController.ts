@@ -6,11 +6,11 @@ import type { User } from "@/js/models/user";
 
 export async function handleCreateAdvertisement(
   values: CreateAdvertisementForm,
-  selectedImages: File[],
   form: UseFormReturn<CreateAdvertisementForm>,
   setIsLoading: (b: boolean) => void,
   navigate: (path: string, options?: { state?: any }) => void,
   user: User | null,
+  selectedImages: File[],
   setImageError: (error: string) => void
 ) {
   setIsLoading(true);
@@ -34,7 +34,7 @@ export async function handleCreateAdvertisement(
     };
 
     // Validate image files
-    const maxFileSize = 5 * 1024 * 1024; // 5MB per file
+    const maxFileSize = 5 * 1024 * 1024;
     const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
     for (const file of selectedImages) {

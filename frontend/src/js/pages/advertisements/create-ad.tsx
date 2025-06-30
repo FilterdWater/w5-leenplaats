@@ -82,24 +82,6 @@ export function CreateAd() {
     console.log("Selected images:", files);
   };
 
-  const onSubmit = async (values: CreateAdvertisementForm) => {
-    // Validate images are selected
-    if (selectedImages.length === 0) {
-      setImageError("Please select at least one image for your advertisement");
-      return;
-    }
-
-    await handleCreateAdvertisement(
-      values,
-      selectedImages,
-      form,
-      setIsLoading,
-      navigate,
-      user,
-      setImageError
-    );
-  };
-
   const handleReset = () => {
     form.reset();
     setSelectedImages([]);
@@ -124,7 +106,9 @@ export function CreateAd() {
                   form,
                   setIsLoading,
                   navigate,
-                  user
+                  user,
+                  selectedImages,
+                  setImageError
                 );
               })}
               className="space-y-6"

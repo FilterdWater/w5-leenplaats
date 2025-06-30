@@ -43,6 +43,7 @@ export function Advertisements() {
         const [ads, fetchedUsers] = await Promise.all([
           fetchAdvertisements(),
           fetchUsers(),
+          fetchCategories(),
         ]);
         setAdvertisements(ads);
         setUsers(fetchedUsers);

@@ -9,14 +9,13 @@ export interface Advertisement {
   user_id: number;
   created_at: string;
   updated_at: string;
-  pictures?: Picture[]; // Related pictures
   categories?: Category[];
+  pictures?: Picture[];
 }
 
 export interface AdvertisementDTO {
   title: string;
   description: string;
-  pictures: string[]; // Array of base64 image data
   price: number;
   rentedBy?: number;
   rentedAt?: Date;
