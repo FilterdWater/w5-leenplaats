@@ -101,6 +101,7 @@ export function Advertisement() {
           </Button>
         </div>
 
+        {/* Main content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Image */}
           <div className="aspect-square overflow-hidden rounded-lg relative">
@@ -176,7 +177,7 @@ export function Advertisement() {
               </div>
             </div>
 
-            {/* Created at */}
+            {/* Created date */}
             <div className="text-sm text-muted-foreground flex items-center">
               <Calendar className="w-4 h-4 mr-2" />
               Geplaatst op{" "}
