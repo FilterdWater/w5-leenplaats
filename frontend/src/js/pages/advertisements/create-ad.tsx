@@ -43,7 +43,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export function CreateAd() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  // const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imageError, setImageError] = useState<string>("");
   const { user } = useUser();
 
@@ -63,7 +63,7 @@ export function CreateAd() {
   });
 
   const handleImageSelect = (file: File | null) => {
-    setSelectedImage(file);
+    // setSelectedImage(file);
     // Clear image error when an image is selected
     if (file) {
       setImageError("");
