@@ -106,9 +106,7 @@ export function CreateAd() {
                   form,
                   setIsLoading,
                   navigate,
-                  user,
-                  selectedImages,
-                  setImageError
+                  user
                 );
               })}
               className="space-y-6"
@@ -243,6 +241,13 @@ export function CreateAd() {
                   </FormItem>
                 )}
               />
+
+              {/* Global Form Error */}
+              {form.formState.errors.root && (
+                <div className="text-sm text-destructive">
+                  {form.formState.errors.root.message}
+                </div>
+              )}
 
               {/* Submit Button */}
               <div className="flex gap-4 pt-4">

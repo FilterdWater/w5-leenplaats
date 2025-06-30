@@ -9,9 +9,7 @@ export async function handleCreateAdvertisement(
   form: UseFormReturn<CreateAdvertisementForm>,
   setIsLoading: (b: boolean) => void,
   navigate: (path: string, options?: { state?: any }) => void,
-  user: User | null,
-  selectedImages: File[],
-  setImageError: (error: string) => void
+  user: User | null
 ) {
   setIsLoading(true);
 
@@ -19,61 +17,36 @@ export async function handleCreateAdvertisement(
 
   if (!token || !user) {
     setIsLoading(false);
-    return {
-      success: false,
-      message: "User not authenticated.",
-    };
+    form.setError("root", {
+      message: "User not login",
+    });
+    return;
   }
 
-  try {
-    const advertisement: AdvertisementDTO = {
-      title: values.title,
-      description: values.description,
-      price: values.pricePerDay,
-      categories: values.categories,
-    };
+  const advertisement: AdvertisementDTO = {
+    title: values.title,
+    description: values.description,
+    price: values.pricePerDay,
+    categories: values.categories,
+  };
 
-    // Validate image files
-    const maxFileSize = 5 * 1024 * 1024;
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+  const result = await createAdvertisement(advertisement);
 
-    for (const file of selectedImages) {
-      if (file.size > maxFileSize) {
-        setImageError(`File ${file.name} is too large. Maximum size is 5MB.`);
-        setIsLoading(false);
-        return;
-      }
-
-      if (!allowedTypes.includes(file.type)) {
-        setImageError(
-          `File ${file.name} has an invalid type. Only JPEG, PNG, and WebP are allowed.`
-        );
-        setIsLoading(false);
-        return;
-      }
-    }
-
-    const result = await createAdvertisement(advertisement, selectedImages);
-
-    if (result.success) {
-      form.reset();
-      navigate("/");
+  if (result.success) {
+    form.reset();
+    navigate("/advertisements");
+  } else {
+    if (result.errors) {
+      Object.keys(result.errors).forEach((field) => {
+        form.setError(field as keyof CreateAdvertisementForm, {
+          message: result.errors?.[field][0],
+        });
+      });
     } else {
-      if (result.errors) {
-        Object.keys(result.errors).forEach((field) => {
-          form.setError(field as keyof CreateAdvertisementForm, {
-            message: result.errors?.[field][0],
-          });
-        });
-      } else {
-        form.setError("root", {
-          message: result.message ?? "Something went wrong",
-        });
-      }
+      form.setError("root", {
+        message: result.message ?? "Something went wrong",
+      });
     }
-  } catch (error) {
-    console.error("Error creating advertisement:", error);
-    setImageError("Failed to create advertisement. Please try again.");
   }
 
   setIsLoading(false);
