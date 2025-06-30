@@ -11,6 +11,7 @@ import { fetchUsers } from "@/js/services/userService";
 import type { Advertisement } from "@/js/models/advertisement";
 import type { User } from "@/js/models/user";
 import { sampleAvailabilityStatus } from "@/js/dummy-data/ad-data";
+import { fetchCategories } from "@/js/services/categoryService";
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -38,6 +39,7 @@ export function Advertisements() {
         const [ads, fetchedUsers] = await Promise.all([
           fetchAdvertisements(),
           fetchUsers(),
+          fetchCategories(),
         ]);
         setAdvertisements(ads);
         setUsers(fetchedUsers);

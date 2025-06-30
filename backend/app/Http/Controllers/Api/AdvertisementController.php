@@ -12,7 +12,7 @@ class AdvertisementController extends Controller
 {
     public function index()
     {
-        $ads = Advertisement::all();
+        $ads = Advertisement::with('categories')->get();
         return response()->json($ads);
     }
 
@@ -24,34 +24,17 @@ class AdvertisementController extends Controller
             'price' => 'required|numeric|min:0.01',
             'categories' => 'required|array|min:1',
             'categories.*' => 'integer|exists:categories,id',
-            'pictures' => 'required|array|min:1', // Match your frontend field name
-            'pictures.*' => 'required|string', // Each image should be a base64 string
+            'pictures' => 'required|array|min:1',
+            'pictures.*' => 'required|string',
         ]);
 
-        foreach ($validated['pictures'] as $index => $image) {
-            if (!$this->isValidBase64Image($image)) {
-                return response()->json([
-                    'message' => 'Invalid image format',
-                    'errors' => [
-                        "pictures.{$index}" => ['The image must be a valid base64 encoded image']
-                    ]
-                ], 422);
-            }
-        }
-
-        $validated['picture_link'] = $validated['pictures'][0];
         $validated['user_id'] = Auth::id();
-
-        // Remove pictures from data since it's not a database field
-        unset($validated['pictures']);
+        $validated['picture_link'] = $validated['pictures'][0];
 
         $ad = Advertisement::create($validated);
-        unset($validated['pictures']);
+        $ad->categories()->sync($validated['categories']);
 
-        return response()->json([
-            'message' => 'Categories attached successfully.',
-            'categories' => $advertisement->categories,
-        ]);
+        return response()->json($ad->load('categories'), 201);
     }
 
     public function show($id)
@@ -77,24 +60,6 @@ class AdvertisementController extends Controller
             'pictures.*' => 'sometimes|string',
         ]);
 
-        // Validate images if they're being updated
-        if (isset($validated['pictures'])) {
-            foreach ($validated['pictures'] as $index => $image) {
-                if (!$this->isValidBase64Image($image)) {
-                    return response()->json([
-                        'message' => 'Invalid image format',
-                        'errors' => [
-                            "pictures.{$index}" => ['The image must be a valid base64 encoded image']
-                        ]
-                    ], 422);
-                }
-            }
-
-            // Update picture_link with first image
-            $validated['picture_link'] = $validated['pictures'][0];
-            unset($validated['pictures']);
-        }
-
         $ad->update($validated);
         return response()->json($ad);
     }
@@ -103,26 +68,5 @@ class AdvertisementController extends Controller
     {
         Advertisement::destroy($id);
         return response()->noContent();
-    }
-
-    /**
-     * Validate if the provided string is a valid base64 image
-     */
-    private function isValidBase64Image($base64String)
-    {
-        // Check if it starts with data:image/
-        if (!preg_match('/^data:image\/[a-zA-Z]+;base64,/', $base64String)) {
-            return false;
-        }
-
-        // Extract the base64 part
-        $base64Data = preg_replace('/^data:image\/[a-zA-Z]+;base64,/', '', $base64String);
-
-        // Check if it's valid base64
-        if (!base64_decode($base64Data, true)) {
-            return false;
-        }
-
-        return true;
     }
 }
