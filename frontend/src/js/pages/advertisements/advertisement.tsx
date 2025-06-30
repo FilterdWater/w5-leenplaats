@@ -6,12 +6,14 @@ import type { BreadcrumbItem } from "@/js/types/app-layout";
 import { Heading } from "@/js/components/heading";
 import { Button } from "@/js/components/ui/button";
 import { BookmarkButton } from "@/js/components/bookmark-button";
-import { ArrowLeft, Calendar, MapPin, Tag } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, Tag, Share2 } from "lucide-react";
 import { Badge } from "@/js/components/ui/badge";
 import {
   getAdvertisementWithUser,
   sampleAvailabilityStatus,
 } from "@/js/dummy-data/ad-data";
+
+import { toast } from "sonner";
 
 export function Advertisement() {
   const { id } = useParams<{ id: string }>();
@@ -44,6 +46,43 @@ export function Advertisement() {
       }
       return newState;
     });
+  };
+
+  const handleShare = async () => {
+    if (!data) return;
+
+    const { advertisement, user } = data;
+    const shareData = {
+      title: advertisement.title,
+      text: `Te leen van ${user.first_name} ${user.last_name} - €${advertisement.price} per dag`,
+      url: window.location.href,
+    };
+
+    try {
+      if (
+        navigator.share &&
+        navigator.canShare &&
+        navigator.canShare(shareData)
+      ) {
+        await navigator.share(shareData);
+      } else {
+        // Fallback: copy URL to clipboard
+        await navigator.clipboard.writeText(window.location.href);
+        toast(
+          "navigator.share() method not supported in your browser? Copied to clipboard instead"
+        );
+      }
+    } catch (error) {
+      console.error("Error sharing:", error);
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        toast(
+          "navigator.share() method not supported in your browser? Copied to clipboard instead"
+        );
+      } catch (clipboardError) {
+        console.error("Failed to copy to clipboard:", clipboardError);
+      }
+    }
   };
 
   // If advertisement not found, show error
@@ -91,12 +130,16 @@ export function Advertisement() {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <div className="container mx-auto px-4 py-6">
-        {/* Back button */}
-        <div className="mb-6">
+        {/* Back button and Share button */}
+        <div className="mb-6 flex justify-between items-center">
           <Button variant="outline" className="mb-4" asChild>
             <Link to="/advertisements">
               <ArrowLeft />
             </Link>
+          </Button>
+          <Button variant="outline" onClick={handleShare} className="mb-4">
+            <Share2 className="w-4 h-4 mr-2" />
+            Delen
           </Button>
         </div>
 
