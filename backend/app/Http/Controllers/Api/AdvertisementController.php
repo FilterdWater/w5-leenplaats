@@ -42,6 +42,9 @@ class AdvertisementController extends Controller
         $validated['picture_link'] = $validated['pictures'][0];
         $validated['user_id'] = Auth::id();
 
+        // Remove pictures from data since it's not a database field
+        unset($validated['pictures']);
+
         $ad = Advertisement::create($validated);
         unset($validated['pictures']);
 

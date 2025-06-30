@@ -16,6 +16,7 @@ export interface Advertisement {
 export interface AdvertisementDTO {
   title: string;
   description: string;
+  pictures: string[]; // Array of base64 image data
   price: number;
   rentedBy?: number;
   rentedAt?: Date;
