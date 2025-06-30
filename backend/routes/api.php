@@ -11,6 +11,23 @@ use Illuminate\Support\Facades\Route;
 // Auth
 Route::post('/login', [AuthController::class, 'login']);
 
+// User
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
+Route::apiResource('users', UserController::class);
+Route::get('/users/email/{email}', [UserController::class, 'emailExists']);
+
+// Advertisement
+Route::get('/advertisements', [AdvertisementController::class, 'index']);
+Route::get('/advertisements/{advertisement}', [AdvertisementController::class, 'show']);
+
+//Advertisement -> Categories
+Route::get('/advertisements/{advertisement}/categories', [AdvertisementController::class, 'fetchCategories']);
+
+// Category
+Route::get('/categories', [CategoryController::class, 'index']);
+
 // Need Token to access
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', function (Request $request) {
@@ -26,11 +43,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/advertisements', [AdvertisementController::class, 'store']);
     Route::put('/advertisements/{advertisement}', [AdvertisementController::class, 'update']);
     Route::delete('/advertisements/{advertisement}', [AdvertisementController::class, 'destroy']);
-});
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+    //Advertisement -> Categories
+    Route::post('/advertisements/{advertisement}/categories', [AdvertisementController::class, 'attachCategories']);
+
+    // Category
+    Route::post('/categories/{category}', [CategoryController::class, 'store']);
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
+});
 
 // Postal
 Route::get('/postal-lookup', function (Request $request) {
@@ -46,14 +66,3 @@ Route::get('/postal-lookup', function (Request $request) {
 
     return $response->json();
 });
-
-// User
-Route::apiResource('users', UserController::class);
-Route::get('/users/email/{email}', [UserController::class, 'emailExists']);
-
-// Advertisement
-Route::get('/advertisements', [AdvertisementController::class, 'index']);
-Route::get('/advertisements/{advertisement}', [AdvertisementController::class, 'show']);
-
-// Category
-Route::apiResource('categories', CategoryController::class);

@@ -17,6 +17,9 @@ export const createAdvertisementSchema = z.object({
     .max(500, {
       message: "Description must be less than 500 characters.",
     }),
+  categories: z
+    .array(z.number())
+    .min(1, { message: "Select at least one category." }),
   pricePerDay: z
     .number({
       required_error: "Price per day is required.",

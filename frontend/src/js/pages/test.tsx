@@ -1,8 +1,6 @@
 import { useDocumentTitle } from "@/js/hooks/use-document-title";
 import { AppLayout } from "@/js/layouts/app-layout";
 import { type BreadcrumbItem } from "@/js/types/app-layout";
-import { Button } from "../components/ui/button";
-import { fetchCategories } from "../services/categoryService";
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -16,9 +14,7 @@ export function Test() {
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
-      <div className="grid grid-cols-2">
-        <Button onClick={fetchCategories}>Fetch</Button>
-      </div>
+      <div className="grid grid-cols-2"></div>
     </AppLayout>
   );
 }

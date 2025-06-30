@@ -3,9 +3,6 @@ export interface Category {
   name: string;
 }
 
-export function categoryToJSON(category: Category) {
-  return {
-    id: category.id,
-    name: category.name,
-  };
+export interface CategoryDTO {
+  name: string;
 }

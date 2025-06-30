@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Advertisement;
 use Illuminate\Support\Facades\Auth;
@@ -22,18 +23,50 @@ class AdvertisementController extends Controller
             'title' => 'required|string|max:100',
             'description' => 'required|string|max:500',
             'price' => 'required|numeric|min:0.01',
+            'categories' => 'required|array|min:1',
+            'categories.*' => 'integer|exists:categories,id',
         ]);
 
-        $validated['user_id'] = Auth::id();
+        $ad = Advertisement::create([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'price' => $validated['price'],
+            'user_id' => auth()->id(),
+        ]);
 
-        $ad = Advertisement::create($validated);
+        $ad->categories()->sync($validated['categories']);
 
-        return response()->json($ad, 201);
+        return response()->json($ad->load('categories'), 201);
+    }
+
+
+    public function attachCategories(Request $request, $advertisementId)
+    {
+        $request->validate([
+            'category_ids' => 'required|array',
+            'category_ids.*' => 'exists:categories,id',
+        ]);
+
+        $advertisement = Advertisement::findOrFail($advertisementId);
+
+        // Koppelt de categorieën (vervangt bestaande koppelingen)
+        $advertisement->categories()->sync($request->category_ids);
+
+        return response()->json([
+            'message' => 'Categories attached successfully.',
+            'categories' => $advertisement->categories,
+        ]);
     }
 
     public function show($id)
     {
         return Advertisement::findOrFail($id);
+    }
+
+    public function fetchCategories($advertisement_id)
+    {
+        $advertisement = Advertisement::findOrFail($advertisement_id);
+        return response()->json($advertisement->categories);
     }
 
     public function update(Request $request, $id)

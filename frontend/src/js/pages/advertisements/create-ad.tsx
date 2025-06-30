@@ -3,7 +3,7 @@ import { AppLayout } from "@/js/layouts/app-layout";
 import { AdvertisementsLayout } from "@/js/layouts/advertisements/layout";
 import { HeadingSmall } from "@/js/components/heading-small";
 import { type BreadcrumbItem } from "@/js/types/app-layout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ImageUpload } from "@/js/components/image-upload";
 import { Input } from "@/js/components/ui/input";
 import { Button } from "@/js/components/ui/button";
@@ -32,6 +32,9 @@ import {
 import { handleCreateAdvertisement } from "@/js/controllers/createAdvertisementController";
 import { useNavigate } from "react-router";
 import { useUser } from "@/js/context/UserContext";
+import { MultiCategoryDropdown } from "@/js/components/search-dropdown";
+import { fetchCategories } from "@/js/services/categoryService";
+import type { Category } from "@/js/models/category";
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -45,7 +48,14 @@ export function CreateAd() {
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imageError, setImageError] = useState<string>("");
+  const [categories, setCategories] = useState<Category[]>([]);
   const { user } = useUser();
+
+  useEffect(() => {
+    fetchCategories().then((data) => {
+      setCategories(data.data);
+    });
+  }, []);
 
   useDocumentTitle(
     "Create advertisement",
@@ -58,6 +68,7 @@ export function CreateAd() {
     defaultValues: {
       title: "",
       description: "",
+      categories: [],
       pricePerDay: 0,
     },
   });
@@ -82,15 +93,16 @@ export function CreateAd() {
         <TooltipProvider>
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit((values) =>
+              onSubmit={form.handleSubmit((values) => {
+                console.log("Submitting form:", values);
                 handleCreateAdvertisement(
                   values,
                   form,
                   setIsLoading,
                   navigate,
                   user
-                )
-              )}
+                );
+              })}
               className="space-y-6"
             >
               {/* Image Upload */}
@@ -173,6 +185,21 @@ export function CreateAd() {
                     </FormControl>
                     <FormMessage />
                   </FormItem>
+                )}
+              />
+
+              {/* Add Categories Field */}
+              <FormField
+                control={form.control}
+                name="categories"
+                render={({ field }) => (
+                  <MultiCategoryDropdown
+                    selectedIds={field.value}
+                    onChange={(newSelectedIds) =>
+                      field.onChange(newSelectedIds)
+                    }
+                    categories={categories}
+                  />
                 )}
               />
 
