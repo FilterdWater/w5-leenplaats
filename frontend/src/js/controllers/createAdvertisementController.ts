@@ -16,7 +16,7 @@ export async function handleCreateAdvertisement(
   const token = localStorage.getItem("token");
 
   if (!token || !user) {
-    setIsLoading(true);
+    setIsLoading(false);
     return {
       success: false,
       message: "User not authenticated.",
@@ -27,6 +27,7 @@ export async function handleCreateAdvertisement(
     title: values.title,
     description: values.description,
     price: values.pricePerDay,
+    categories: values.categories,
   };
 
   const result = await createAdvertisement(advertisement);

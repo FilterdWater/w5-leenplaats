@@ -15,4 +15,9 @@ class Advertisement extends Model
         'rented_at',
         'rented_until',
     ];
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'advertisement_has_categories', 'advertisement_id', 'category_id');
+    }
 }

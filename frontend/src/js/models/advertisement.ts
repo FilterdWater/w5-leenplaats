@@ -23,6 +23,7 @@ export interface AdvertisementDTO {
   rentedBy?: number;
   rentedAt?: Date;
   rentedUntil?: Date;
+  categories?: number[];
 }
 
 export function advertisementToJSON(ad: Advertisement) {
