@@ -11,6 +11,7 @@ import { fetchUsers } from "@/js/services/userService";
 import type { Advertisement } from "@/js/models/advertisement";
 import type { User } from "@/js/models/user";
 import { sampleAvailabilityStatus } from "@/js/dummy-data/ad-data";
+import { useLocation } from "react-router";
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -31,6 +32,10 @@ export function Advertisements() {
   const [bookmarkedItems, setBookmarkedItems] = useState<Set<number>>(
     new Set()
   );
+
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const searchQuery = params.get("search")?.toLowerCase() || "";
 
   useEffect(() => {
     async function loadData() {
@@ -69,6 +74,10 @@ export function Advertisements() {
     });
   };
 
+  const filteredAds = advertisements.filter((ad) =>
+    ad.title.toLowerCase().includes(searchQuery)
+  );
+
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <div className="container mx-auto px-4 py-6">
@@ -88,7 +97,7 @@ export function Advertisements() {
           <div>Loading...</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {advertisements.map((advertisement) => {
+            {filteredAds.map((advertisement) => {
               const user = users.find((u) => u.id === advertisement.user_id);
 
               if (!user) return null;
