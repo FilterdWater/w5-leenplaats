@@ -34,12 +34,13 @@ import { UserMenuContent } from "@/js/components/user-menu-content";
 import { useInitials } from "@/js/hooks/use-initials";
 import { cn } from "@/js/lib/utils";
 import { type BreadcrumbItem, type NavItem } from "@/js/types/app-layout";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { Menu, UserRound, Search, LoaderCircle, View } from "lucide-react";
 import { AppLogo } from "./app-logo";
 import { AppLogoIcon } from "./app-logo-icon";
 import { useUser } from "@/js/context/UserContext";
 
+import { useState } from "react";
 const mainNavItems: NavItem[] = [
   // {
   //   title: "Home",
@@ -65,6 +66,18 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
   const getInitials = useInitials();
   const { user, isLoggedIn, isLoading } = useUser();
 
+  const [searchInput, setSearchInput] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    const params = new URLSearchParams(location.search);
+    if (searchInput) {
+      params.set("search", searchInput);
+    } else {
+      params.delete("search");
+    }
+    navigate(`${location.pathname}?${params.toString()}`);
+  };
   // Show loading state while checking authentication
   if (isLoading) {
     return (
@@ -165,8 +178,19 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
 
           {/* Center: Search bar */}
           <div className="flex justify-center flex-grow max-w-sm items-center gap-2">
-            <Input type="text" placeholder="Search" />
-            <Button variant="secondary" size="icon" className="h-8 w-8">
+            <Input
+              type="text"
+              placeholder="Search"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            />
+            <Button
+              variant="secondary"
+              size="icon"
+              className="h-8 w-8"
+              onClick={handleSearch}
+            >
               <Search className="h-4 w-4" />
             </Button>
           </div>
