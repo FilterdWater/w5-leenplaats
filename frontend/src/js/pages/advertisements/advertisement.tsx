@@ -37,6 +37,7 @@ export function Advertisement() {
           const users = await fetchUsers();
           const matchedUser = users.find((u) => u.id === ad.user_id);
           setUser(matchedUser || null);
+
           // You can replace this with a real availability field
           setIsAvailable(true);
         }
@@ -51,15 +52,19 @@ export function Advertisement() {
   const handleBookmark = () => {
     setIsBookmarked((prev) => {
       const newState = !prev;
+
+      // Bookmark toggle log
       console.log(
         `${
           newState ? "Added to" : "Removed from"
         } notification list: advertisement ${advertisementId}`
       );
+
       return newState;
     });
   };
 
+  // Fallback UI for invalid or missing ad
   if (!advertisement || !user) {
     return (
       <AppLayout breadcrumbs={[]}>
@@ -87,6 +92,7 @@ export function Advertisement() {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <div className="container mx-auto px-4 py-6">
+        {/* Back button */}
         <div className="mb-6">
           <Button variant="outline" className="mb-4" asChild>
             <Link to="/advertisements">
@@ -105,6 +111,7 @@ export function Advertisement() {
                 !isAvailable ? "grayscale opacity-60" : ""
               }`}
             />
+            {/* Availability badge */}
             <div className="absolute top-3 left-3">
               <div
                 className={`px-3 py-1 rounded-full text-xs font-semibold shadow-lg ${
@@ -116,19 +123,22 @@ export function Advertisement() {
             </div>
           </div>
 
-          {/* Details */}
+          {/* Details section */}
           <div className="space-y-6">
+            {/* Title & Description */}
             <Heading
               title={advertisement.title}
               description={advertisement.description}
             />
 
+            {/* Price */}
             <div className="bg-green-50 border border-green-200 rounded-lg p-4">
               <div className="text-2xl font-bold text-green-700">
                 €{advertisement.price} per dag
               </div>
             </div>
 
+            {/* Categories */}
             <div className="flex flex-wrap gap-2">
               {advertisement.categories?.map((category) => (
                 <Badge key={category.id} variant="secondary">
@@ -138,13 +148,10 @@ export function Advertisement() {
               ))}
             </div>
 
+            {/* User Info */}
             <div className="border rounded-lg p-4">
               <div className="flex items-center space-x-3">
-                {/* <img
-                  src={user.profile_picture}
-                  alt={`${user.first_name} ${user.last_name}`}
-                  className="w-12 h-12 rounded-full object-cover"
-                /> */}
+                {/* Avatar (fallback included) */}
                 <Avatar className="w-12 h-12">
                   <AvatarImage
                     src={user.profile_picture}
@@ -156,6 +163,7 @@ export function Advertisement() {
                   </AvatarFallback>
                 </Avatar>
 
+                {/* Name and city */}
                 <div>
                   <p className="font-medium">
                     {user.first_name} {user.last_name}
@@ -168,12 +176,14 @@ export function Advertisement() {
               </div>
             </div>
 
+            {/* Created at */}
             <div className="text-sm text-muted-foreground flex items-center">
               <Calendar className="w-4 h-4 mr-2" />
               Geplaatst op{" "}
               {new Date(advertisement.created_at).toLocaleDateString("nl-NL")}
             </div>
 
+            {/* Rent / Bookmark section */}
             <div className="space-y-3">
               {isAvailable ? (
                 <Button className="w-full" size="lg">
