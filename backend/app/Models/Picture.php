@@ -10,11 +10,11 @@ class Picture extends Model
     use HasFactory;
 
     protected $fillable = [
-        'picture_link',
+        'picture_base_string',
     ];
 
     public function advertisements()
     {
-        return $this->belongsToMany(Advertisement::class, 'advertisement_has_pictures');
+        return $this->belongsToMany(Advertisement::class, 'advertisement_has_pictures', 'picture_id', 'advertisement_id');
     }
 }

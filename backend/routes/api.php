@@ -4,6 +4,8 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AdvertisementController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\PictureController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -50,6 +52,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Category
     Route::post('/categories/{category}', [CategoryController::class, 'store']);
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
+
+    //Picture
+    Route::post('/pictures', [PictureController::class, 'store']);
+
 });
 
 // Postal

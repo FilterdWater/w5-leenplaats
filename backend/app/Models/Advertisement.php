@@ -33,6 +33,7 @@ class Advertisement extends Model
 
     public function pictures()
     {
-        return $this->belongsToMany(Picture::class, 'advertisement_has_pictures');
+        return $this->belongsToMany(Picture::class, 'advertisement_has_pictures', 'advertisement_id', 'picture_id');
     }
+
 }

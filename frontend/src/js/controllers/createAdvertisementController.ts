@@ -3,13 +3,27 @@ import type { CreateAdvertisementForm } from "../schemas/createAdvertisementSche
 import type { AdvertisementDTO } from "../models/advertisement";
 import { createAdvertisement } from "../services/advertisementService";
 import type { User } from "@/js/models/user";
+import type { Picture, PictureDTO } from "@/js/models/picture";
+import { storePictures } from "../services/pictureService";
+
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      resolve(reader.result as string);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 export async function handleCreateAdvertisement(
   values: CreateAdvertisementForm,
   form: UseFormReturn<CreateAdvertisementForm>,
   setIsLoading: (b: boolean) => void,
   navigate: (path: string, options?: { state?: any }) => void,
-  user: User | null
+  user: User | null,
+  pictures?: File[] | null
 ) {
   setIsLoading(true);
 
@@ -17,9 +31,7 @@ export async function handleCreateAdvertisement(
 
   if (!token || !user) {
     setIsLoading(false);
-    form.setError("root", {
-      message: "User not login",
-    });
+    form.setError("root", { message: "User not login" });
     return;
   }
 
@@ -29,6 +41,29 @@ export async function handleCreateAdvertisement(
     price: values.pricePerDay,
     categories: values.categories,
   };
+
+  if (pictures != null) {
+    const base64Images = await Promise.all(
+      pictures.map((file) => fileToBase64(file))
+    );
+
+    const pictureDTOs = base64Images.map((base64) => ({
+      picture_base_string: base64,
+    }));
+
+    const pictureResult = await storePictures(pictureDTOs);
+
+    if (pictureResult.success) {
+      const pictureIds = pictureResult.data.map((pic: Picture) => pic.id);
+      advertisement.pictures = pictureIds;
+    } else {
+      form.setError("root", {
+        message: pictureResult.message ?? "Failed to upload images",
+      });
+      setIsLoading(false);
+      return;
+    }
+  }
 
   const result = await createAdvertisement(advertisement);
 

@@ -106,7 +106,8 @@ export function CreateAd() {
                   form,
                   setIsLoading,
                   navigate,
-                  user
+                  user,
+                  selectedImages
                 );
               })}
               className="space-y-6"
@@ -124,7 +125,7 @@ export function CreateAd() {
                     <TooltipContent>
                       <p>
                         Upload clear photos of your item to attract borrowers
-                        (max 5 images)
+                        (max 4 images)
                       </p>
                     </TooltipContent>
                   </Tooltip>

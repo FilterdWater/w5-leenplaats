@@ -12,7 +12,7 @@ class AdvertisementController extends Controller
 {
     public function index()
     {
-        $ads = Advertisement::with('categories')->get();
+        $ads = Advertisement::with(['categories', 'pictures'])->get();
         return response()->json($ads);
     }
 
@@ -25,7 +25,7 @@ class AdvertisementController extends Controller
             'categories' => 'required|array|min:1',
             'categories.*' => 'integer|exists:categories,id',
             'pictures' => 'required|array|min:1',
-            'pictures.*' => 'required|string',
+            'pictures.*' => 'integer|exists:pictures,id',
         ]);
 
         $ad = Advertisement::create([
@@ -38,12 +38,13 @@ class AdvertisementController extends Controller
         $ad->categories()->sync($validated['categories']);
         $ad->pictures()->sync($validated['pictures']);
 
-        return response()->json($ad->load('categories'), 201);
+        return response()->json($ad->load('categories', 'pictures'), 201);
     }
 
     public function show($id)
     {
-        return Advertisement::findOrFail($id);
+        $ad = Advertisement::with(['categories', 'pictures'])->findOrFail($id);
+        return response()->json($ad);
     }
 
     public function fetchCategories($advertisement_id)

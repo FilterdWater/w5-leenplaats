@@ -43,6 +43,8 @@ export function Advertisements() {
           fetchAdvertisements(),
           fetchUsers(),
         ]);
+        console.log(ads);
+
         setAdvertisements(ads);
         setUsers(fetchedUsers);
       } catch (err) {

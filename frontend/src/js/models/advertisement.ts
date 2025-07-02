@@ -24,5 +24,5 @@ export interface AdvertisementDTO {
   rentedAt?: Date;
   rentedUntil?: Date;
   categories?: number[];
-  pictures?: string[];
+  pictures?: number[];
 }
