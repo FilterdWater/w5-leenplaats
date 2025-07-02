@@ -18,7 +18,6 @@ type AdvertisementCardProps = {
   user: User;
   isBookmarked?: boolean;
   onBookmark?: () => void;
-  isAvailable?: boolean;
 };
 
 export function AdvertisementCard({
@@ -26,10 +25,11 @@ export function AdvertisementCard({
   user,
   isBookmarked = false,
   onBookmark,
-  isAvailable = true,
 }: AdvertisementCardProps) {
   const { title, description, categories, price } = advertisement;
   const { first_name, last_name, profile_picture } = user;
+
+  const isAvailable = !advertisement.rentedBy;
 
   return (
     <Card className="group w-full max-w-sm bg-card transition-all duration-300 ease-in-out transform hover:-translate-y-1 border-0 overflow-hidden p-0">
@@ -38,7 +38,7 @@ export function AdvertisementCard({
         <div className="relative h-52 bg-muted">
           <Link to={`/advertisements/${advertisement.id}`}>
             <img
-              src={advertisement.imageUrl}
+              src={advertisement.pictures}
               alt={advertisement.title}
               className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
                 !isAvailable ? "grayscale opacity-60" : ""

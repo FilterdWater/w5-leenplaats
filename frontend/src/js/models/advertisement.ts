@@ -7,6 +7,9 @@ export interface Advertisement {
   description: string;
   price: number;
   user_id: number;
+  rentedBy?: number;
+  rentedAt?: Date;
+  rentedUntil?: Date;
   created_at: string;
   updated_at: string;
   categories?: Category[];

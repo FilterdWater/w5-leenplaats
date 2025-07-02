@@ -24,8 +24,8 @@ class AdvertisementController extends Controller
             'price' => 'required|numeric|min:0.01',
             'categories' => 'required|array|min:1',
             'categories.*' => 'integer|exists:categories,id',
-//            'pictures' => 'required|array|min:1',
-//            'pictures.*' => 'required|string',
+            'pictures' => 'required|array|min:1',
+            'pictures.*' => 'required|string',
         ]);
 
         $ad = Advertisement::create([
@@ -36,12 +36,8 @@ class AdvertisementController extends Controller
         ]);
 
         $ad->categories()->sync($validated['categories']);
+        $ad->pictures()->sync($validated['pictures']);
 
-
-//        $validated['user_id'] = Auth::id();
-//        $validated['picture_link'] = $validated['pictures'][0];
-
-//        $ad = Advertisement::create($validated);
         return response()->json($ad->load('categories'), 201);
     }
 
