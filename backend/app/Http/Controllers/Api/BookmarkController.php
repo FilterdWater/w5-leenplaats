@@ -6,11 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class WishlistController extends Controller
+class BookmarkController extends Controller
 {
     public function index()
     {
-        return Auth::user()->wishlist;
+        return Auth::user()->bookmarks()->with(['pictures', 'user'])->get();
     }
 
     public function store(Request $request)
@@ -20,9 +20,9 @@ class WishlistController extends Controller
         ]);
 
         $user = Auth::user();
-        $user->wishlist()->syncWithoutDetaching([$validated['advertisement_id']]);
+        $user->bookmarks()->syncWithoutDetaching([$validated['advertisement_id']]);
 
-        return response()->json(['message' => 'Added to wishlist']);
+        return response()->json(['message' => 'Added to bookmarks']);
     }
 
 
@@ -33,9 +33,9 @@ class WishlistController extends Controller
         ]);
 
         $user = Auth::user();
-        $user->wishlist()->detach($validated['advertisement_id']);
+        $user->bookmarks()->detach($validated['advertisement_id']);
 
-        return response()->json(['message' => 'Removed from wishlist']);
+        return response()->json(['message' => 'Removed from bookmarks']);
     }
 }
 

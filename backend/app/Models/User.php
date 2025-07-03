@@ -35,9 +35,9 @@ class User extends Authenticatable
         ];
     }
 
-    public function wishlist()
+    public function bookmarks()
     {
-        return $this->belongsToMany(Advertisement::class, 'user_wishlist');
+        return $this->belongsToMany(Advertisement::class, 'user_bookmark');
     }
 
 }

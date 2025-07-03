@@ -1,5 +1,5 @@
 import { Button } from "@/js/components/ui/button";
-import { Bookmark, BookmarkCheck } from "lucide-react";
+import { Bookmark } from "lucide-react";
 
 type BookmarkButtonVariant = "icon" | "full";
 
@@ -26,8 +26,8 @@ export function BookmarkButton({
     onToggle();
   };
 
-  const bookmarkedTitle = "Verwijder van wachtlijst";
-  const unbookmarkedTitle = "Voeg toe aan wachtlijst";
+  const bookmarkedTitle = "Verwijder van bookmarks";
+  const unbookmarkedTitle = "Voeg toe aan bookmarks";
 
   if (variant === "icon") {
     return (
@@ -60,14 +60,12 @@ export function BookmarkButton({
       {isBookmarked ? (
         <>
           <Bookmark className="h-4 w-4 text-emerald-600 dark:text-emerald-400 fill-green-500" />
-          <div className="text-emerald-600 dark:text-emerald-400">
-            Wachtlijst
-          </div>
+          <div className="text-emerald-600 dark:text-emerald-400">Bookmark</div>
         </>
       ) : (
         <>
           <Bookmark className="h-4 w-4" />
-          Wachtlijst
+          Bookmark
         </>
       )}
     </Button>

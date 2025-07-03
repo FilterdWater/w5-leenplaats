@@ -1,9 +1,9 @@
 import type { Advertisement } from "../models/advertisement";
 import type { ApiResponse } from "../types/api-response";
 
-// GET: All Advertisements in wishlist
-export async function fetchWishlist(): Promise<ApiResponse> {
-  const response = await fetch(`http://localhost:80/api/wishlist`, {
+// GET: All Advertisements in bookmark
+export async function fetchBookmarks(): Promise<ApiResponse> {
+  const response = await fetch(`http://localhost:80/api/bookmark`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
@@ -14,10 +14,10 @@ export async function fetchWishlist(): Promise<ApiResponse> {
   return { success: true, data: data as Advertisement[] };
 }
 
-// POST: Add Advertisements to wishlist
-export async function addToWishlist(id: number): Promise<ApiResponse> {
+// POST: Add Advertisements to bookmark
+export async function addToBookmark(id: number): Promise<ApiResponse> {
   try {
-    const response = await fetch(`http://localhost:80/api/wishlist`, {
+    const response = await fetch(`http://localhost:80/api/bookmark`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -48,10 +48,10 @@ export async function addToWishlist(id: number): Promise<ApiResponse> {
   }
 }
 
-// DELETE: Remove Advertisement from wishlist
-export async function removeFromWishlist(id: number): Promise<ApiResponse> {
+// DELETE: Remove Advertisement from bookmark
+export async function removeFromBookmark(id: number): Promise<ApiResponse> {
   try {
-    const response = await fetch(`http://localhost:80/api/wishlist`, {
+    const response = await fetch(`http://localhost:80/api/bookmark`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
