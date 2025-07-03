@@ -12,13 +12,13 @@ import { BookmarkButton } from "@/js/components/bookmark-button";
 import type { Advertisement } from "../models/advertisement";
 import type { User } from "@/js/models/user";
 import { Link } from "react-router";
+import { useState } from "react";
 
 type AdvertisementCardProps = {
   advertisement: Advertisement;
   user: User;
   isBookmarked?: boolean;
   onBookmark?: () => void;
-  isAvailable?: boolean;
 };
 
 export function AdvertisementCard({
@@ -26,24 +26,47 @@ export function AdvertisementCard({
   user,
   isBookmarked = false,
   onBookmark,
-  isAvailable = true,
 }: AdvertisementCardProps) {
-  const { title, description, categories, price } = advertisement;
+  const {
+    title,
+    description,
+    categories,
+    price,
+    pictures = [],
+  } = advertisement;
   const { first_name, last_name, profile_picture } = user;
 
+  const isAvailable = !advertisement.rentedBy;
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const showNext = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % pictures.length);
+  };
+
+  const showPrev = () => {
+    setCurrentImageIndex((prev) =>
+      prev === 0 ? pictures.length - 1 : prev - 1
+    );
+  };
   return (
     <Card className="group w-full max-w-sm bg-card transition-all duration-300 ease-in-out transform hover:-translate-y-1 border-0 overflow-hidden p-0">
       {/* Image Header */}
       <CardHeader className="p-0 relative overflow-hidden">
         <div className="relative h-52 bg-muted">
           <Link to={`/advertisements/${advertisement.id}`}>
-            <img
-              src={advertisement.imageUrl}
-              alt={advertisement.title}
-              className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
-                !isAvailable ? "grayscale opacity-60" : ""
-              }`}
-            />
+            {pictures.length > 0 ? (
+              <img
+                src={pictures[currentImageIndex].picture_base_string}
+                alt={title}
+                className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
+                  !isAvailable ? "grayscale opacity-60" : ""
+                }`}
+              />
+            ) : (
+              <div className="w-full h-full bg-muted flex items-center justify-center text-sm text-muted-foreground">
+                Geen afbeelding
+              </div>
+            )}
           </Link>
 
           {/* Availability Badge */}

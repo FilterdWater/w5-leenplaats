@@ -27,9 +27,6 @@ import { Advertisements } from "@/js/pages/advertisements/advertisements";
 import { Advertisement } from "@/js/pages/advertisements/advertisement";
 import { CreateAd } from "@/js/pages/advertisements/create-ad";
 
-// Test
-import { Test } from "@/js/pages/test";
-
 // Configuration with nested routes
 const router = createBrowserRouter([
   // Root layout
@@ -95,12 +92,6 @@ const router = createBrowserRouter([
             Component: CreateAd,
           },
         ],
-      },
-
-      // Test path
-      {
-        path: "test",
-        Component: Test,
       },
     ],
   },

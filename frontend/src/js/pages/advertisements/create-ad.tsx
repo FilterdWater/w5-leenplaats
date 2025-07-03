@@ -4,7 +4,7 @@ import { AdvertisementsLayout } from "@/js/layouts/advertisements/layout";
 import { HeadingSmall } from "@/js/components/heading-small";
 import { type BreadcrumbItem } from "@/js/types/app-layout";
 import { useEffect, useState } from "react";
-import { ImageUpload } from "@/js/components/image-upload";
+import { MultiImageUpload } from "@/js/components/image-upload";
 import { Input } from "@/js/components/ui/input";
 import { Button } from "@/js/components/ui/button";
 import { Textarea } from "@/js/components/ui/textarea";
@@ -46,7 +46,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export function CreateAd() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [imageError, setImageError] = useState<string>("");
   const [categories, setCategories] = useState<Category[]>([]);
   const { user } = useUser();
@@ -73,13 +73,19 @@ export function CreateAd() {
     },
   });
 
-  const handleImageSelect = (file: File | null) => {
-    setSelectedImage(file);
-    // Clear image error when an image is selected
-    if (file) {
+  const handleImagesSelect = (files: File[]) => {
+    setSelectedImages(files);
+    // Clear image error when images are selected
+    if (files.length > 0) {
       setImageError("");
     }
-    console.log("Selected image:", file);
+    console.log("Selected images:", files);
+  };
+
+  const handleReset = () => {
+    form.reset();
+    setSelectedImages([]);
+    setImageError("");
   };
 
   return (
@@ -100,7 +106,8 @@ export function CreateAd() {
                   form,
                   setIsLoading,
                   navigate,
-                  user
+                  user,
+                  selectedImages
                 );
               })}
               className="space-y-6"
@@ -109,7 +116,7 @@ export function CreateAd() {
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <label className="block text-sm font-medium text-muted-foreground">
-                    Image
+                    Images *
                   </label>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -117,12 +124,13 @@ export function CreateAd() {
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>
-                        Upload a clear photo of your item to attract borrowers
+                        Upload clear photos of your item to attract borrowers
+                        (max 4 images)
                       </p>
                     </TooltipContent>
                   </Tooltip>
                 </div>
-                <ImageUpload onImageSelect={handleImageSelect} />
+                <MultiImageUpload onImagesSelect={handleImagesSelect} />
                 {imageError && (
                   <p className="text-sm text-destructive mt-2">{imageError}</p>
                 )}
@@ -235,6 +243,13 @@ export function CreateAd() {
                 )}
               />
 
+              {/* Global Form Error */}
+              {form.formState.errors.root && (
+                <div className="text-sm text-destructive">
+                  {form.formState.errors.root.message}
+                </div>
+              )}
+
               {/* Submit Button */}
               <div className="flex gap-4 pt-4">
                 <Button type="submit" disabled={isLoading}>
@@ -243,11 +258,7 @@ export function CreateAd() {
                   )}
                   Create advertisement
                 </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => form.reset()}
-                >
+                <Button type="button" variant="outline" onClick={handleReset}>
                   Reset Form
                 </Button>
               </div>

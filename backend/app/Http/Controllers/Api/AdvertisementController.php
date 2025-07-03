@@ -8,12 +8,11 @@ use Illuminate\Http\Request;
 use App\Models\Advertisement;
 use Illuminate\Support\Facades\Auth;
 
-
 class AdvertisementController extends Controller
 {
     public function index()
     {
-        $ads = Advertisement::all();
+        $ads = Advertisement::with(['categories', 'pictures'])->get();
         return response()->json($ads);
     }
 
@@ -25,6 +24,8 @@ class AdvertisementController extends Controller
             'price' => 'required|numeric|min:0.01',
             'categories' => 'required|array|min:1',
             'categories.*' => 'integer|exists:categories,id',
+            'pictures' => 'required|array|min:1',
+            'pictures.*' => 'integer|exists:pictures,id',
         ]);
 
         $ad = Advertisement::create([
@@ -35,32 +36,15 @@ class AdvertisementController extends Controller
         ]);
 
         $ad->categories()->sync($validated['categories']);
+        $ad->pictures()->sync($validated['pictures']);
 
-        return response()->json($ad->load('categories'), 201);
-    }
-
-
-    public function attachCategories(Request $request, $advertisementId)
-    {
-        $request->validate([
-            'category_ids' => 'required|array',
-            'category_ids.*' => 'exists:categories,id',
-        ]);
-
-        $advertisement = Advertisement::findOrFail($advertisementId);
-
-        // Koppelt de categorieën (vervangt bestaande koppelingen)
-        $advertisement->categories()->sync($request->category_ids);
-
-        return response()->json([
-            'message' => 'Categories attached successfully.',
-            'categories' => $advertisement->categories,
-        ]);
+        return response()->json($ad->load('categories', 'pictures'), 201);
     }
 
     public function show($id)
     {
-        return Advertisement::findOrFail($id);
+        $ad = Advertisement::with(['categories', 'pictures'])->findOrFail($id);
+        return response()->json($ad);
     }
 
     public function fetchCategories($advertisement_id)
@@ -72,8 +56,17 @@ class AdvertisementController extends Controller
     public function update(Request $request, $id)
     {
         $ad = Advertisement::findOrFail($id);
-        $ad->update($request->all());
-        return $ad;
+
+        $validated = $request->validate([
+            'title' => 'sometimes|string|max:100',
+            'description' => 'sometimes|string|max:500',
+            'price' => 'sometimes|numeric|min:0.01',
+            'pictures' => 'sometimes|array|min:1',
+            'pictures.*' => 'sometimes|string',
+        ]);
+
+        $ad->update($validated);
+        return response()->json($ad);
     }
 
     public function destroy($id)
@@ -82,4 +75,3 @@ class AdvertisementController extends Controller
         return response()->noContent();
     }
 }
-

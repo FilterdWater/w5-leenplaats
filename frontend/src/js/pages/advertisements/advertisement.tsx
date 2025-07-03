@@ -92,7 +92,6 @@ export function Advertisement() {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <div className="container mx-auto px-4 py-6">
-        {/* Back button */}
         <div className="mb-6">
           <Button variant="outline" className="mb-4" asChild>
             <Link to="/advertisements">
@@ -101,17 +100,19 @@ export function Advertisement() {
           </Button>
         </div>
 
-        {/* Main content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Image */}
           <div className="aspect-square overflow-hidden rounded-lg relative">
-            <img
-              src={advertisement.imageUrl}
-              alt={advertisement.title}
-              className={`w-full h-full object-cover ${
-                !isAvailable ? "grayscale opacity-60" : ""
-              }`}
-            />
+            {advertisement.pictures && advertisement.pictures.length > 0 && (
+              <img
+                src={advertisement.pictures[0].picture_base_string}
+                alt={advertisement.title}
+                className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
+                  !isAvailable ? "grayscale opacity-60" : ""
+                }`}
+              />
+            )}
+
             {/* Availability badge */}
             <div className="absolute top-3 left-3">
               <div
@@ -132,14 +133,12 @@ export function Advertisement() {
               description={advertisement.description}
             />
 
-            {/* Price */}
             <div className="bg-green-50 border border-green-200 rounded-lg p-4">
               <div className="text-2xl font-bold text-green-700">
                 €{advertisement.price} per dag
               </div>
             </div>
 
-            {/* Categories */}
             <div className="flex flex-wrap gap-2">
               {advertisement.categories?.map((category) => (
                 <Badge key={category.id} variant="secondary">

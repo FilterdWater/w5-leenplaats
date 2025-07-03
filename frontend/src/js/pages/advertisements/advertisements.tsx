@@ -10,7 +10,6 @@ import { fetchAdvertisements } from "@/js/services/advertisementService";
 import { fetchUsers } from "@/js/services/userService";
 import type { Advertisement } from "@/js/models/advertisement";
 import type { User } from "@/js/models/user";
-import { sampleAvailabilityStatus } from "@/js/dummy-data/ad-data";
 import { useLocation } from "react-router";
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -44,6 +43,8 @@ export function Advertisements() {
           fetchAdvertisements(),
           fetchUsers(),
         ]);
+        console.log(ads);
+
         setAdvertisements(ads);
         setUsers(fetchedUsers);
       } catch (err) {
@@ -102,16 +103,12 @@ export function Advertisements() {
 
               if (!user) return null;
 
-              const isAvailable =
-                sampleAvailabilityStatus[advertisement.id] ?? true;
-
               return (
                 <AdvertisementCard
                   key={advertisement.id}
                   advertisement={advertisement}
                   user={user}
                   isBookmarked={bookmarkedItems.has(advertisement.id)}
-                  isAvailable={isAvailable}
                   onBookmark={() => handleBookmark(advertisement.id)}
                 />
               );
