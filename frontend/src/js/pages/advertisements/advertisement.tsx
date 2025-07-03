@@ -13,6 +13,12 @@ import { fetchUsers } from "@/js/services/userService";
 import type { Advertisement } from "@/js/models/advertisement";
 import type { User } from "@/js/models/user";
 import {
+  addToWishlist,
+  fetchWishlist,
+  removeFromWishlist,
+} from "@/js/services/wishlistService";
+import { toast } from "sonner";
+import {
   Carousel,
   CarouselContent,
   CarouselItem,
@@ -48,6 +54,18 @@ export function Advertisement() {
           // You can replace this with a real availability field
           setIsAvailable(true);
         }
+
+        // **Fetch wishlist en check bookmark status**
+        const wishlistAdsResponse = await fetchWishlist();
+
+        if (wishlistAdsResponse.success && wishlistAdsResponse.data) {
+          const isInWishlist = wishlistAdsResponse.data.some(
+            (wishlistAd: Advertisement) => wishlistAd.id === advertisementId
+          );
+          setIsBookmarked(isInWishlist);
+        } else {
+          setIsBookmarked(false);
+        }
       } catch (err) {
         console.error("Failed to load advertisement or user", err);
       }
@@ -56,19 +74,22 @@ export function Advertisement() {
     loadData();
   }, [advertisementId]);
 
-  const handleBookmark = () => {
-    setIsBookmarked((prev) => {
-      const newState = !prev;
+  const handleBookmark = async () => {
+    const newState = !isBookmarked;
+    setIsBookmarked(newState);
 
-      // Bookmark toggle log
-      console.log(
-        `${
-          newState ? "Added to" : "Removed from"
-        } notification list: advertisement ${advertisementId}`
-      );
-
-      return newState;
-    });
+    try {
+      if (newState) {
+        const response = await addToWishlist(advertisementId!);
+        toast(response.message);
+      } else {
+        const response = await removeFromWishlist(advertisementId!);
+        toast(response.message);
+      }
+    } catch (error) {
+      console.error("Fout bij wishlist:", error);
+      setIsBookmarked(!newState); // revert state bij error
+    }
   };
 
   // Fallback UI for invalid or missing ad
@@ -198,9 +219,16 @@ export function Advertisement() {
             {/* Rent / Bookmark section */}
             <div className="space-y-3">
               {isAvailable ? (
-                <Button className="w-full" size="lg">
-                  Huren
-                </Button>
+                <div className="flex gap-3">
+                  <Button className="flex-1" size="lg">
+                    Huren
+                  </Button>
+                  <BookmarkButton
+                    isBookmarked={isBookmarked}
+                    onToggle={handleBookmark}
+                    variant="full"
+                  />
+                </div>
               ) : (
                 <div className="flex gap-3">
                   <Button className="flex-1" size="lg" disabled>

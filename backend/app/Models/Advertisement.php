@@ -36,4 +36,8 @@ class Advertisement extends Model
         return $this->belongsToMany(Picture::class, 'advertisement_has_pictures', 'advertisement_id', 'picture_id');
     }
 
+    public function wishlistedBy()
+    {
+        return $this->belongsToMany(User::class, 'user_wishlist');
+    }
 }

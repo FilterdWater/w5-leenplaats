@@ -39,15 +39,6 @@ export function AdvertisementCard({
   const isAvailable = !advertisement.rentedBy;
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const showNext = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % pictures.length);
-  };
-
-  const showPrev = () => {
-    setCurrentImageIndex((prev) =>
-      prev === 0 ? pictures.length - 1 : prev - 1
-    );
-  };
   return (
     <Card className="group w-full max-w-sm bg-card transition-all duration-300 ease-in-out transform hover:-translate-y-1 border-0 overflow-hidden p-0">
       {/* Image Header */}
@@ -82,8 +73,8 @@ export function AdvertisementCard({
             )}
           </div>
 
-          {/* Bookmark Button, only show when unavailable */}
-          {!isAvailable && onBookmark && (
+          {/* Bookmark Button */}
+          {onBookmark && (
             <div className="absolute top-3 right-3">
               <BookmarkButton
                 isBookmarked={isBookmarked}
