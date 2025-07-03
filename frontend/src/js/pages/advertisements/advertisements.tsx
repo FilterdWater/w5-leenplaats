@@ -11,6 +11,11 @@ import { fetchUsers } from "@/js/services/userService";
 import type { Advertisement } from "@/js/models/advertisement";
 import type { User } from "@/js/models/user";
 import { useLocation } from "react-router";
+import {
+  removeFromWishlist,
+  addToWishlist,
+  fetchWishlist,
+} from "@/js/services/wishlistService";
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -39,14 +44,19 @@ export function Advertisements() {
   useEffect(() => {
     async function loadData() {
       try {
-        const [ads, fetchedUsers] = await Promise.all([
+        const [ads, fetchedUsers, wishlist] = await Promise.all([
           fetchAdvertisements(),
           fetchUsers(),
+          fetchWishlist(),
         ]);
-        console.log(ads);
 
         setAdvertisements(ads);
         setUsers(fetchedUsers);
+
+        const bookmarkedIds = new Set(
+          (wishlist.data as Advertisement[]).map((ad) => ad.id)
+        );
+        setBookmarkedItems(bookmarkedIds);
       } catch (err) {
         console.error("Data fetch failed:", err);
       } finally {
@@ -57,22 +67,29 @@ export function Advertisements() {
     loadData();
   }, []);
 
-  const handleBookmark = (advertisementId: number) => {
-    setBookmarkedItems((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(advertisementId)) {
-        newSet.delete(advertisementId);
-        console.log(
-          `Removed from notification list: advertisement ${advertisementId}`
-        );
+  const handleBookmark = async (advertisementId: number) => {
+    const isCurrentlyBookmarked = bookmarkedItems.has(advertisementId);
+
+    try {
+      if (isCurrentlyBookmarked) {
+        await removeFromWishlist(advertisementId);
+        setBookmarkedItems((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(advertisementId);
+          return newSet;
+        });
       } else {
-        newSet.add(advertisementId);
-        console.log(
-          `Added to notification list: advertisement ${advertisementId}`
-        );
+        await addToWishlist(advertisementId);
+        setBookmarkedItems((prev) => {
+          const newSet = new Set(prev);
+          newSet.add(advertisementId);
+          return newSet;
+        });
       }
-      return newSet;
-    });
+    } catch (error) {
+      console.error("Fout bij wishlist update:", error);
+      // Optioneel: toon feedback aan gebruiker
+    }
   };
 
   const filteredAds = advertisements.filter((ad) =>

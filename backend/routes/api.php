@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AdvertisementController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\PictureController;
+use App\Http\Controllers\Api\WishlistController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -53,9 +54,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/categories/{category}', [CategoryController::class, 'store']);
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
 
-    //Picture
+    // Picture
     Route::post('/pictures', [PictureController::class, 'store']);
 
+    // Wishlist
+    Route::get('/wishlist', [WishlistController::class, 'index']);
+    Route::post('/wishlist', [WishlistController::class, 'store']);
+    Route::delete('/wishlist', [WishlistController::class, 'destroy']);
 });
 
 // Postal

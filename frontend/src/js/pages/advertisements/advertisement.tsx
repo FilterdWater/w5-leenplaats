@@ -12,6 +12,19 @@ import { fetchAdvertisements } from "@/js/services/advertisementService";
 import { fetchUsers } from "@/js/services/userService";
 import type { Advertisement } from "@/js/models/advertisement";
 import type { User } from "@/js/models/user";
+import {
+  addToWishlist,
+  fetchWishlist,
+  removeFromWishlist,
+} from "@/js/services/wishlistService";
+import { toast } from "sonner";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/js/components/ui/carousel";
 
 export function Advertisement() {
   const { id } = useParams<{ id: string }>();
@@ -41,6 +54,18 @@ export function Advertisement() {
           // You can replace this with a real availability field
           setIsAvailable(true);
         }
+
+        // **Fetch wishlist en check bookmark status**
+        const wishlistAdsResponse = await fetchWishlist();
+
+        if (wishlistAdsResponse.success && wishlistAdsResponse.data) {
+          const isInWishlist = wishlistAdsResponse.data.some(
+            (wishlistAd: Advertisement) => wishlistAd.id === advertisementId
+          );
+          setIsBookmarked(isInWishlist);
+        } else {
+          setIsBookmarked(false);
+        }
       } catch (err) {
         console.error("Failed to load advertisement or user", err);
       }
@@ -49,19 +74,22 @@ export function Advertisement() {
     loadData();
   }, [advertisementId]);
 
-  const handleBookmark = () => {
-    setIsBookmarked((prev) => {
-      const newState = !prev;
+  const handleBookmark = async () => {
+    const newState = !isBookmarked;
+    setIsBookmarked(newState);
 
-      // Bookmark toggle log
-      console.log(
-        `${
-          newState ? "Added to" : "Removed from"
-        } notification list: advertisement ${advertisementId}`
-      );
-
-      return newState;
-    });
+    try {
+      if (newState) {
+        const response = await addToWishlist(advertisementId!);
+        toast(response.message);
+      } else {
+        const response = await removeFromWishlist(advertisementId!);
+        toast(response.message);
+      }
+    } catch (error) {
+      console.error("Fout bij wishlist:", error);
+      setIsBookmarked(!newState); // revert state bij error
+    }
   };
 
   // Fallback UI for invalid or missing ad
@@ -102,28 +130,25 @@ export function Advertisement() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Image */}
-          <div className="aspect-square overflow-hidden rounded-lg relative">
-            {advertisement.pictures && advertisement.pictures.length > 0 && (
-              <img
-                src={advertisement.pictures[0].picture_base_string}
-                alt={advertisement.title}
-                className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
-                  !isAvailable ? "grayscale opacity-60" : ""
-                }`}
-              />
-            )}
-
-            {/* Availability badge */}
-            <div className="absolute top-3 left-3">
-              <div
-                className={`px-3 py-1 rounded-full text-xs font-semibold shadow-lg ${
-                  isAvailable ? "bg-emerald-500" : "bg-red-500"
-                } text-white`}
-              >
-                {isAvailable ? "Beschikbaar" : "Niet beschikbaar"}
-              </div>
-            </div>
-          </div>
+          <Carousel className="w-full">
+            <CarouselContent>
+              {advertisement.pictures?.map((picture, index) => (
+                <CarouselItem key={index}>
+                  <div className="aspect-square overflow-hidden rounded-lg relative">
+                    <img
+                      src={picture.picture_base_string}
+                      alt={`${advertisement.title} - Image ${index + 1}`}
+                      className={`w-full h-full object-cover ${
+                        !isAvailable ? "grayscale opacity-60" : ""
+                      }`}
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10" />
+            <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10" />
+          </Carousel>
 
           {/* Details section */}
           <div className="space-y-6">
@@ -133,9 +158,17 @@ export function Advertisement() {
               description={advertisement.description}
             />
 
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <div className="bg-green-50 border border-green-200 flex-row flex items-center justify-between rounded-lg p-4">
               <div className="text-2xl font-bold text-green-700">
                 €{advertisement.price} per dag
+              </div>
+              {/* Availability badge */}
+              <div
+                className={`px-3 py-1 rounded-md text-xs font-semibold ${
+                  isAvailable ? "bg-emerald-500" : "bg-red-500"
+                } text-white`}
+              >
+                {isAvailable ? "Beschikbaar" : "Niet beschikbaar"}
               </div>
             </div>
 
@@ -186,9 +219,16 @@ export function Advertisement() {
             {/* Rent / Bookmark section */}
             <div className="space-y-3">
               {isAvailable ? (
-                <Button className="w-full" size="lg">
-                  Huren
-                </Button>
+                <div className="flex gap-3">
+                  <Button className="flex-1" size="lg">
+                    Huren
+                  </Button>
+                  <BookmarkButton
+                    isBookmarked={isBookmarked}
+                    onToggle={handleBookmark}
+                    variant="full"
+                  />
+                </div>
               ) : (
                 <div className="flex gap-3">
                   <Button className="flex-1" size="lg" disabled>

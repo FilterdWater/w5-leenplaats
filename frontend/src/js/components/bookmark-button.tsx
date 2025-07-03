@@ -39,7 +39,7 @@ export function BookmarkButton({
         title={isBookmarked ? bookmarkedTitle : unbookmarkedTitle}
       >
         {isBookmarked ? (
-          <BookmarkCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+          <Bookmark className="h-4 w-4 text-emerald-600 dark:text-emerald-400 fill-green-500" />
         ) : (
           <Bookmark className="h-4 w-4 text-foreground" />
         )}
@@ -59,8 +59,10 @@ export function BookmarkButton({
     >
       {isBookmarked ? (
         <>
-          <BookmarkCheck className="h-4 w-4" />
-          Op wachtlijst
+          <Bookmark className="h-4 w-4 text-emerald-600 dark:text-emerald-400 fill-green-500" />
+          <div className="text-emerald-600 dark:text-emerald-400">
+            Wachtlijst
+          </div>
         </>
       ) : (
         <>
