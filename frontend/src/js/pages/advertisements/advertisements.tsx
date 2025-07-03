@@ -12,10 +12,10 @@ import type { Advertisement } from "@/js/models/advertisement";
 import type { User } from "@/js/models/user";
 import { useLocation } from "react-router";
 import {
-  removeFromWishlist,
-  addToWishlist,
-  fetchWishlist,
-} from "@/js/services/wishlistService";
+  removeFromBookmark,
+  addToBookmark,
+  fetchBookmarks,
+} from "@/js/services/bookmarkService";
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -44,17 +44,17 @@ export function Advertisements() {
   useEffect(() => {
     async function loadData() {
       try {
-        const [ads, fetchedUsers, wishlist] = await Promise.all([
+        const [ads, fetchedUsers, bookmarks] = await Promise.all([
           fetchAdvertisements(),
           fetchUsers(),
-          fetchWishlist(),
+          fetchBookmarks(),
         ]);
 
         setAdvertisements(ads);
         setUsers(fetchedUsers);
 
         const bookmarkedIds = new Set(
-          (wishlist.data as Advertisement[]).map((ad) => ad.id)
+          (bookmarks.data as Advertisement[]).map((ad) => ad.id)
         );
         setBookmarkedItems(bookmarkedIds);
       } catch (err) {
@@ -72,14 +72,14 @@ export function Advertisements() {
 
     try {
       if (isCurrentlyBookmarked) {
-        await removeFromWishlist(advertisementId);
+        await removeFromBookmark(advertisementId);
         setBookmarkedItems((prev) => {
           const newSet = new Set(prev);
           newSet.delete(advertisementId);
           return newSet;
         });
       } else {
-        await addToWishlist(advertisementId);
+        await addToBookmark(advertisementId);
         setBookmarkedItems((prev) => {
           const newSet = new Set(prev);
           newSet.add(advertisementId);
@@ -87,7 +87,7 @@ export function Advertisements() {
         });
       }
     } catch (error) {
-      console.error("Fout bij wishlist update:", error);
+      console.error("Fout bij bookmark update:", error);
       // Optioneel: toon feedback aan gebruiker
     }
   };

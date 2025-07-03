@@ -13,10 +13,10 @@ import { fetchUsers } from "@/js/services/userService";
 import type { Advertisement } from "@/js/models/advertisement";
 import type { User } from "@/js/models/user";
 import {
-  addToWishlist,
-  fetchWishlist,
-  removeFromWishlist,
-} from "@/js/services/wishlistService";
+  addToBookmark,
+  fetchBookmarks,
+  removeFromBookmark,
+} from "@/js/services/bookmarkService";
 import { toast } from "sonner";
 import {
   Carousel,
@@ -55,14 +55,14 @@ export function Advertisement() {
           setIsAvailable(true);
         }
 
-        // **Fetch wishlist en check bookmark status**
-        const wishlistAdsResponse = await fetchWishlist();
+        // **Fetch bookmark en check bookmark status**
+        const bookmarkAdsResponse = await fetchBookmarks();
 
-        if (wishlistAdsResponse.success && wishlistAdsResponse.data) {
-          const isInWishlist = wishlistAdsResponse.data.some(
-            (wishlistAd: Advertisement) => wishlistAd.id === advertisementId
+        if (bookmarkAdsResponse.success && bookmarkAdsResponse.data) {
+          const isInBookmark = bookmarkAdsResponse.data.some(
+            (bookmarkAd: Advertisement) => bookmarkAd.id === advertisementId
           );
-          setIsBookmarked(isInWishlist);
+          setIsBookmarked(isInBookmark);
         } else {
           setIsBookmarked(false);
         }
@@ -80,14 +80,14 @@ export function Advertisement() {
 
     try {
       if (newState) {
-        const response = await addToWishlist(advertisementId!);
+        const response = await addToBookmark(advertisementId!);
         toast(response.message);
       } else {
-        const response = await removeFromWishlist(advertisementId!);
+        const response = await removeFromBookmark(advertisementId!);
         toast(response.message);
       }
     } catch (error) {
-      console.error("Fout bij wishlist:", error);
+      console.error("Fout bij bookmark:", error);
       setIsBookmarked(!newState); // revert state bij error
     }
   };

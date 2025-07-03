@@ -27,8 +27,8 @@ import { Advertisements } from "@/js/pages/advertisements/advertisements";
 import { Advertisement } from "@/js/pages/advertisements/advertisement";
 import { CreateAd } from "@/js/pages/advertisements/create-ad";
 
-// Wishlist
-import { Wishlist } from "@/js/pages/wishlist";
+// Bookmark
+import { Bookmarks } from "@/js/pages/bookmarks";
 
 // Configuration with nested routes
 const router = createBrowserRouter([
@@ -97,10 +97,10 @@ const router = createBrowserRouter([
         ],
       },
 
-      // Wishlist route
+      // Bookmark route
       {
-        path: "wishlist",
-        Component: Wishlist,
+        path: "bookmarks",
+        Component: Bookmarks,
       },
     ],
   },

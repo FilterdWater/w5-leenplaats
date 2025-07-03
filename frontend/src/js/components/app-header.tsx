@@ -35,7 +35,14 @@ import { useInitials } from "@/js/hooks/use-initials";
 import { cn } from "@/js/lib/utils";
 import { type BreadcrumbItem, type NavItem } from "@/js/types/app-layout";
 import { Link, useLocation, useNavigate } from "react-router";
-import { Menu, UserRound, Search, LoaderCircle, View, Heart } from "lucide-react";
+import {
+  Menu,
+  UserRound,
+  Search,
+  LoaderCircle,
+  View,
+  Heart,
+} from "lucide-react";
 import { AppLogo } from "./app-logo";
 import { AppLogoIcon } from "./app-logo-icon";
 import { useUser } from "@/js/context/UserContext";
@@ -53,8 +60,8 @@ const mainNavItems: NavItem[] = [
     icon: View,
   },
   {
-    title: "Wishlist",
-    href: "/wishlist",
+    title: "Bookmarks",
+    href: "/bookmarks",
     icon: Heart,
   },
 ];
