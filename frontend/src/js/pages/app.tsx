@@ -8,7 +8,7 @@ export function App() {
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <UserProvider>
         <Outlet />
-        <Toaster />
+        <Toaster position="top-center" />
       </UserProvider>
     </ThemeProvider>
   );

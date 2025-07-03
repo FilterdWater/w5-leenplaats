@@ -50,8 +50,6 @@ export function Advertisement() {
           const users = await fetchUsers();
           const matchedUser = users.find((u) => u.id === ad.user_id);
           setUser(matchedUser || null);
-
-          // You can replace this with a real availability field
           setIsAvailable(true);
         }
 
@@ -223,22 +221,26 @@ export function Advertisement() {
                   <Button className="flex-1" size="lg">
                     Huren
                   </Button>
-                  <BookmarkButton
-                    isBookmarked={isBookmarked}
-                    onToggle={handleBookmark}
-                    variant="full"
-                  />
+                  {localStorage.getItem("token") && (
+                    <BookmarkButton
+                      isBookmarked={isBookmarked}
+                      onToggle={handleBookmark}
+                      variant="full"
+                    />
+                  )}
                 </div>
               ) : (
                 <div className="flex gap-3">
                   <Button className="flex-1" size="lg" disabled>
                     Niet beschikbaar
                   </Button>
-                  <BookmarkButton
-                    isBookmarked={isBookmarked}
-                    onToggle={handleBookmark}
-                    variant="full"
-                  />
+                  {localStorage.getItem("token") && (
+                    <BookmarkButton
+                      isBookmarked={isBookmarked}
+                      onToggle={handleBookmark}
+                      variant="full"
+                    />
+                  )}
                 </div>
               )}
             </div>

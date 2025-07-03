@@ -16,12 +16,6 @@ export async function createAdvertisement(
   ad: AdvertisementDTO
 ): Promise<ApiResponse> {
   try {
-    console.log("Advertisement:", ad);
-
-    const token = localStorage.getItem("token");
-
-    console.log(token);
-
     const response = await fetch("http://localhost:80/api/advertisements", {
       method: "POST",
       headers: {
