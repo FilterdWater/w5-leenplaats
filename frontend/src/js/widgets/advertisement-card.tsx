@@ -74,7 +74,7 @@ export function AdvertisementCard({
           </div>
 
           {/* Bookmark Button */}
-          {onBookmark && (
+          {localStorage.getItem("token") && onBookmark && (
             <div className="absolute top-3 right-3">
               <BookmarkButton
                 isBookmarked={isBookmarked}

@@ -44,19 +44,28 @@ export function Advertisements() {
   useEffect(() => {
     async function loadData() {
       try {
-        const [ads, fetchedUsers, wishlist] = await Promise.all([
+        const [ads, fetchedUsers] = await Promise.all([
           fetchAdvertisements(),
           fetchUsers(),
-          fetchWishlist(),
         ]);
 
         setAdvertisements(ads);
         setUsers(fetchedUsers);
 
-        const bookmarkedIds = new Set(
-          (wishlist.data as Advertisement[]).map((ad) => ad.id)
-        );
-        setBookmarkedItems(bookmarkedIds);
+        const token = localStorage.getItem("token");
+        if (token) {
+          const wishlist = await fetchWishlist();
+          if (wishlist.success && Array.isArray(wishlist.data)) {
+            const bookmarkedIds = new Set(
+              (wishlist.data as Advertisement[]).map((ad) => ad.id)
+            );
+            setBookmarkedItems(bookmarkedIds);
+          } else {
+            setBookmarkedItems(new Set());
+          }
+        } else {
+          setBookmarkedItems(new Set());
+        }
       } catch (err) {
         console.error("Data fetch failed:", err);
       } finally {

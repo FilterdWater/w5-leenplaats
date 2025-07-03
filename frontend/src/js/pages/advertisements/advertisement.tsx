@@ -50,19 +50,21 @@ export function Advertisement() {
           const users = await fetchUsers();
           const matchedUser = users.find((u) => u.id === ad.user_id);
           setUser(matchedUser || null);
-
-          // You can replace this with a real availability field
           setIsAvailable(true);
         }
 
-        // **Fetch wishlist en check bookmark status**
-        const wishlistAdsResponse = await fetchWishlist();
+        const token = localStorage.getItem("token");
+        if (token) {
+          const wishlistAdsResponse = await fetchWishlist();
 
-        if (wishlistAdsResponse.success && wishlistAdsResponse.data) {
-          const isInWishlist = wishlistAdsResponse.data.some(
-            (wishlistAd: Advertisement) => wishlistAd.id === advertisementId
-          );
-          setIsBookmarked(isInWishlist);
+          if (wishlistAdsResponse.success && wishlistAdsResponse.data) {
+            const isInWishlist = wishlistAdsResponse.data.some(
+              (wishlistAd: Advertisement) => wishlistAd.id === advertisementId
+            );
+            setIsBookmarked(isInWishlist);
+          } else {
+            setIsBookmarked(false);
+          }
         } else {
           setIsBookmarked(false);
         }
@@ -223,22 +225,26 @@ export function Advertisement() {
                   <Button className="flex-1" size="lg">
                     Huren
                   </Button>
-                  <BookmarkButton
-                    isBookmarked={isBookmarked}
-                    onToggle={handleBookmark}
-                    variant="full"
-                  />
+                  {localStorage.getItem("token") && (
+                    <BookmarkButton
+                      isBookmarked={isBookmarked}
+                      onToggle={handleBookmark}
+                      variant="full"
+                    />
+                  )}
                 </div>
               ) : (
                 <div className="flex gap-3">
                   <Button className="flex-1" size="lg" disabled>
                     Niet beschikbaar
                   </Button>
-                  <BookmarkButton
-                    isBookmarked={isBookmarked}
-                    onToggle={handleBookmark}
-                    variant="full"
-                  />
+                  {localStorage.getItem("token") && (
+                    <BookmarkButton
+                      isBookmarked={isBookmarked}
+                      onToggle={handleBookmark}
+                      variant="full"
+                    />
+                  )}
                 </div>
               )}
             </div>
