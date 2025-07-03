@@ -10,7 +10,7 @@ class WishlistController extends Controller
 {
     public function index()
     {
-        return Auth::user()->wishlist;
+        return Auth::user()->wishlist()->with(['pictures', 'user'])->get();
     }
 
     public function store(Request $request)
