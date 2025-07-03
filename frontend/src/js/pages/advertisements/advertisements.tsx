@@ -44,19 +44,29 @@ export function Advertisements() {
   useEffect(() => {
     async function loadData() {
       try {
-        const [ads, fetchedUsers, bookmarks] = await Promise.all([
+        const [ads, fetchedUsers] = await Promise.all([
           fetchAdvertisements(),
           fetchUsers(),
-          fetchBookmarks(),
         ]);
 
         setAdvertisements(ads);
         setUsers(fetchedUsers);
 
-        const bookmarkedIds = new Set(
-          (bookmarks.data as Advertisement[]).map((ad) => ad.id)
-        );
-        setBookmarkedItems(bookmarkedIds);
+        const token = localStorage.getItem("token");
+        if (token) {
+          try {
+            const bookmarks = await fetchBookmarks();
+            const bookmarkedIds = new Set(
+              (bookmarks.data as Advertisement[]).map((ad) => ad.id)
+            );
+            setBookmarkedItems(bookmarkedIds);
+          } catch (bookmarkError) {
+            console.error("Failed to fetch bookmarks:", bookmarkError);
+            // Continue without bookmarks if fetching fails
+          }
+        } else {
+          setBookmarkedItems(new Set());
+        }
       } catch (err) {
         console.error("Data fetch failed:", err);
       } finally {
