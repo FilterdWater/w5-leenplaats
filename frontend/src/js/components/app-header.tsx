@@ -3,7 +3,6 @@ import { Breadcrumbs } from "@/js/components/breadcrumbs";
 import { Icon } from "@/js/components/icon";
 import { Avatar, AvatarFallback, AvatarImage } from "@/js/components/ui/avatar";
 import { Button } from "@/js/components/ui/button";
-import { Input } from "@/js/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -34,26 +33,14 @@ import { UserMenuContent } from "@/js/components/user-menu-content";
 import { useInitials } from "@/js/hooks/use-initials";
 import { cn } from "@/js/lib/utils";
 import { type BreadcrumbItem, type NavItem } from "@/js/types/app-layout";
-import { Link, useLocation, useNavigate } from "react-router";
-import {
-  Menu,
-  UserRound,
-  Search,
-  LoaderCircle,
-  View,
-  Heart,
-} from "lucide-react";
+import { Link, useLocation } from "react-router";
+import { Menu, UserRound, LoaderCircle, View, Bookmark } from "lucide-react";
 import { AppLogo } from "./app-logo";
 import { AppLogoIcon } from "./app-logo-icon";
 import { useUser } from "@/js/context/UserContext";
+import { SearchAdvertisements } from "@/js/components/search-advertisements";
 
-import { useState } from "react";
 const mainNavItems: NavItem[] = [
-  // {
-  //   title: "Home",
-  //   href: "/",
-  //   icon: Home,
-  // },
   {
     title: "Advertisements",
     href: "/advertisements",
@@ -62,7 +49,7 @@ const mainNavItems: NavItem[] = [
   {
     title: "Bookmarks",
     href: "/bookmarks",
-    icon: Heart,
+    icon: Bookmark,
   },
 ];
 
@@ -78,18 +65,6 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
   const getInitials = useInitials();
   const { user, isLoggedIn, isLoading } = useUser();
 
-  const [searchInput, setSearchInput] = useState("");
-  const navigate = useNavigate();
-
-  const handleSearch = () => {
-    const params = new URLSearchParams(location.search);
-    if (searchInput) {
-      params.set("search", searchInput);
-    } else {
-      params.delete("search");
-    }
-    navigate(`${location.pathname}?${params.toString()}`);
-  };
   // Show loading state while checking authentication
   if (isLoading) {
     return (
@@ -109,106 +84,88 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
   return (
     <>
       <div className="border-sidebar-border/80 border-b">
-        <div className="mx-auto flex h-16 items-center justify-between px-4 md:max-w-7xl">
-          {/* Left side: Mobile menu + logo + desktop nav */}
-          <div className="flex items-center space-x-6 w-1/3 min-w-[250px]">
-            <div className="lg:hidden">
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="mr-2 h-[34px] w-[34px]"
-                  >
-                    <Menu className="h-5 w-5" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent
-                  side="left"
-                  className="bg-sidebar flex h-full w-64 flex-col items-stretch justify-between"
+        <div className="mx-auto flex h-16 items-center px-4 md:max-w-7xl">
+          {/* Mobile Menu */}
+          <div className="lg:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="mr-2 h-[34px] w-[34px]"
                 >
-                  <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-                  <SheetHeader className="flex justify-start text-left">
-                    <AppLogoIcon className="h-6 w-6 fill-current text-black dark:text-white" />
-                  </SheetHeader>
-                  <div className="flex h-full flex-1 flex-col space-y-4 p-4">
-                    <div className="flex h-full flex-col justify-between text-sm">
-                      <div className="flex flex-col space-y-4">
-                        {mainNavItems.map((item) => (
-                          <Link
-                            key={item.title}
-                            to={item.href}
-                            className="flex items-center space-x-2 font-medium"
-                          >
-                            {item.icon && (
-                              <Icon iconNode={item.icon} className="h-5 w-5" />
-                            )}
-                            <span>{item.title}</span>
-                          </Link>
-                        ))}
-                      </div>
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent
+                side="left"
+                className="bg-sidebar flex h-full w-64 flex-col items-stretch justify-between"
+              >
+                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                <SheetHeader className="flex justify-start text-left">
+                  <AppLogoIcon className="h-6 w-6 fill-current text-black dark:text-white" />
+                </SheetHeader>
+                <div className="flex h-full flex-1 flex-col space-y-4 p-4">
+                  <div className="flex h-full flex-col justify-between text-sm">
+                    <div className="flex flex-col space-y-4">
+                      {mainNavItems.map((item) => (
+                        <Link
+                          key={item.title}
+                          to={item.href}
+                          className="flex items-center space-x-2 font-medium"
+                        >
+                          {item.icon && (
+                            <Icon iconNode={item.icon} className="h-5 w-5" />
+                          )}
+                          <span>{item.title}</span>
+                        </Link>
+                      ))}
                     </div>
                   </div>
-                </SheetContent>
-              </Sheet>
-            </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
 
-            <Link to="/" className="flex items-center space-x-2">
-              <AppLogo />
-            </Link>
+          <Link to="/" className="flex items-center space-x-2">
+            <AppLogo />
+          </Link>
 
-            <div className="hidden h-full items-center space-x-6 lg:flex">
-              <NavigationMenu className="flex h-full items-stretch">
-                <NavigationMenuList className="flex h-full items-stretch space-x-2">
-                  {mainNavItems.map((item, index) => (
-                    <NavigationMenuItem
-                      key={index}
-                      className="relative flex h-full items-center"
-                    >
-                      <Link
-                        to={item.href}
-                        className={cn(
-                          navigationMenuTriggerStyle(),
-                          location.pathname === item.href && activeItemStyles,
-                          "h-9 cursor-pointer px-3"
-                        )}
-                      >
-                        {item.icon && (
-                          <Icon iconNode={item.icon} className="mr-2 h-4 w-4" />
-                        )}
-                        {item.title}
-                      </Link>
-                      {location.pathname === item.href && (
-                        <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"></div>
+          {/* Desktop Navigation */}
+          <div className="ml-6 hidden h-full items-center space-x-6 lg:flex">
+            <NavigationMenu className="flex h-full items-stretch">
+              <NavigationMenuList className="flex h-full items-stretch space-x-2">
+                {mainNavItems.map((item, index) => (
+                  <NavigationMenuItem
+                    key={index}
+                    className="relative flex h-full items-center"
+                  >
+                    <Link
+                      to={item.href}
+                      className={cn(
+                        navigationMenuTriggerStyle(),
+                        location.pathname === item.href && activeItemStyles,
+                        "h-9 cursor-pointer px-3"
                       )}
-                    </NavigationMenuItem>
-                  ))}
-                </NavigationMenuList>
-              </NavigationMenu>
+                    >
+                      {item.icon && (
+                        <Icon iconNode={item.icon} className="mr-2 h-4 w-4" />
+                      )}
+                      {item.title}
+                    </Link>
+                    {location.pathname === item.href && (
+                      <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"></div>
+                    )}
+                  </NavigationMenuItem>
+                ))}
+              </NavigationMenuList>
+            </NavigationMenu>
+          </div>
+
+          <div className="ml-auto flex items-center space-x-2">
+            <div className="relative flex items-center space-x-1">
+              <SearchAdvertisements />
             </div>
-          </div>
-
-          {/* Center: Search bar */}
-          <div className="flex justify-center flex-grow max-w-sm items-center gap-2">
-            <Input
-              type="text"
-              placeholder="Search"
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            />
-            <Button
-              variant="secondary"
-              size="icon"
-              className="h-8 w-8"
-              onClick={handleSearch}
-            >
-              <Search className="h-4 w-4" />
-            </Button>
-          </div>
-
-          {/* Right side: User menu */}
-          <div className="flex items-center space-x-2 w-1/3 min-w-[150px] justify-end">
             {isLoggedIn ? (
               // Logged-in user: show avatar + dropdown menu
               <DropdownMenu>
@@ -267,7 +224,6 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
           </div>
         </div>
       </div>
-
       {breadcrumbs.length > 1 && (
         <div className="border-sidebar-border/70 flex w-full border-b">
           <div className="mx-auto flex h-12 w-full items-center justify-start px-4 text-neutral-500 md:max-w-7xl">

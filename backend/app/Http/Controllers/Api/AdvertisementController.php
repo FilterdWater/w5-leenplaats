@@ -12,7 +12,7 @@ class AdvertisementController extends Controller
 {
     public function index()
     {
-        $ads = Advertisement::with(['categories', 'pictures'])->get();
+        $ads = Advertisement::with(['categories', 'pictures', 'user'])->get();
         return response()->json($ads);
     }
 

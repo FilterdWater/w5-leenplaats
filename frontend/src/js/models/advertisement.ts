@@ -1,5 +1,6 @@
 import type { Category } from "./category";
 import type { Picture } from "./picture";
+import type { User } from "./user";
 
 export interface Advertisement {
   id: number;
@@ -7,6 +8,7 @@ export interface Advertisement {
   description: string;
   price: number;
   user_id: number;
+  user: User;
   rentedBy?: number;
   rentedAt?: Date;
   rentedUntil?: Date;
