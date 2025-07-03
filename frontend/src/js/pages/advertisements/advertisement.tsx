@@ -12,6 +12,13 @@ import { fetchAdvertisements } from "@/js/services/advertisementService";
 import { fetchUsers } from "@/js/services/userService";
 import type { Advertisement } from "@/js/models/advertisement";
 import type { User } from "@/js/models/user";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/js/components/ui/carousel";
 
 export function Advertisement() {
   const { id } = useParams<{ id: string }>();
@@ -102,28 +109,35 @@ export function Advertisement() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Image */}
-          <div className="aspect-square overflow-hidden rounded-lg relative">
-            {advertisement.pictures && advertisement.pictures.length > 0 && (
-              <img
-                src={advertisement.pictures[0].picture_base_string}
-                alt={advertisement.title}
-                className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
-                  !isAvailable ? "grayscale opacity-60" : ""
-                }`}
-              />
-            )}
-
-            {/* Availability badge */}
-            <div className="absolute top-3 left-3">
-              <div
-                className={`px-3 py-1 rounded-full text-xs font-semibold shadow-lg ${
-                  isAvailable ? "bg-emerald-500" : "bg-red-500"
-                } text-white`}
-              >
-                {isAvailable ? "Beschikbaar" : "Niet beschikbaar"}
-              </div>
-            </div>
-          </div>
+          <Carousel className="w-full">
+            <CarouselContent>
+              {advertisement.pictures?.map((picture, index) => (
+                <CarouselItem key={index}>
+                  <div className="aspect-square overflow-hidden rounded-lg relative">
+                    <img
+                      src={picture.picture_base_string}
+                      alt={`${advertisement.title} - Image ${index + 1}`}
+                      className={`w-full h-full object-cover ${
+                        !isAvailable ? "grayscale opacity-60" : ""
+                      }`}
+                    />
+                    {/* Availability badge */}
+                    <div className="absolute top-3 left-3">
+                      <div
+                        className={`px-3 py-1 rounded-full text-xs font-semibold shadow-lg ${
+                          isAvailable ? "bg-emerald-500" : "bg-red-500"
+                        } text-white`}
+                      >
+                        {isAvailable ? "Beschikbaar" : "Niet beschikbaar"}
+                      </div>
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10" />
+            <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10" />
+          </Carousel>
 
           {/* Details section */}
           <div className="space-y-6">
