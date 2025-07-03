@@ -121,16 +121,6 @@ export function Advertisement() {
                         !isAvailable ? "grayscale opacity-60" : ""
                       }`}
                     />
-                    {/* Availability badge */}
-                    <div className="absolute top-3 left-3">
-                      <div
-                        className={`px-3 py-1 rounded-full text-xs font-semibold shadow-lg ${
-                          isAvailable ? "bg-emerald-500" : "bg-red-500"
-                        } text-white`}
-                      >
-                        {isAvailable ? "Beschikbaar" : "Niet beschikbaar"}
-                      </div>
-                    </div>
                   </div>
                 </CarouselItem>
               ))}
@@ -147,9 +137,17 @@ export function Advertisement() {
               description={advertisement.description}
             />
 
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <div className="bg-green-50 border border-green-200 flex-row flex items-center justify-between rounded-lg p-4">
               <div className="text-2xl font-bold text-green-700">
                 €{advertisement.price} per dag
+              </div>
+              {/* Availability badge */}
+              <div
+                className={`px-3 py-1 rounded-md text-xs font-semibold ${
+                  isAvailable ? "bg-emerald-500" : "bg-red-500"
+                } text-white`}
+              >
+                {isAvailable ? "Beschikbaar" : "Niet beschikbaar"}
               </div>
             </div>
 

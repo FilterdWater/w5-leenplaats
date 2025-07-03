@@ -96,10 +96,10 @@ export function AdvertisementCard({
       </CardHeader>
 
       {/* Content Section */}
-      <CardContent className="p-5 space-y-4">
+      <CardContent className="space-y-2">
         {/* Title */}
         <div>
-          <CardTitle className="text-xl font-bold text-card-foreground line-clamp-2 leading-tight pb-2">
+          <CardTitle className="text-xl font-bold text-card-foreground line-clamp-2 leading-tight">
             {title}
           </CardTitle>
           <CardDescription className="text-muted-foreground mt-2 line-clamp-2 text-sm leading-relaxed">
