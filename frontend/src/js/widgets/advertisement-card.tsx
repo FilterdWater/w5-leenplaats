@@ -12,7 +12,6 @@ import { BookmarkButton } from "@/js/components/bookmark-button";
 import type { Advertisement } from "../models/advertisement";
 import type { User } from "@/js/models/user";
 import { Link } from "react-router";
-import { useState } from "react";
 
 type AdvertisementCardProps = {
   advertisement: Advertisement;
@@ -36,8 +35,7 @@ export function AdvertisementCard({
   } = advertisement;
   const { first_name, last_name, profile_picture } = user;
 
-  const isAvailable = !advertisement.rentedBy;
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const isAvailable = !advertisement.is_rented;
 
   return (
     <Card className="group w-full max-w-sm bg-card transition-all duration-300 ease-in-out transform hover:-translate-y-1 border-0 overflow-hidden p-0">
@@ -47,7 +45,7 @@ export function AdvertisementCard({
           <Link to={`/advertisements/${advertisement.id}`}>
             {pictures.length > 0 ? (
               <img
-                src={pictures[currentImageIndex].picture_base_string}
+                src={pictures[0].picture_base_string}
                 alt={title}
                 className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
                   !isAvailable ? "grayscale opacity-60" : ""
@@ -104,7 +102,7 @@ export function AdvertisementCard({
             <Badge
               key={cat.id}
               variant="secondary"
-              className="text-xs px-2.5 py-0.5 font-medium bg-secondary text-secondary-foreground hover:bg-secondary/80"
+              className="text-xs px-2.5 py-0.5 font-medium bg-secondary text-secondary-foreground"
             >
               {cat.name}
             </Badge>
@@ -112,7 +110,7 @@ export function AdvertisementCard({
           {categories && categories.length > 3 && (
             <Badge
               variant="secondary"
-              className="text-xs px-2.5 py-0.5 font-medium bg-secondary text-secondary-foreground hover:bg-secondary/80"
+              className="text-xs px-2.5 py-0.5 font-medium bg-secondary text-secondary-foreground"
             >
               +{categories.length - 3}
             </Badge>

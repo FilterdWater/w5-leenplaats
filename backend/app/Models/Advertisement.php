@@ -40,4 +40,14 @@ class Advertisement extends Model
     {
         return $this->belongsToMany(User::class, 'user_bookmark');
     }
+
+    public function rentals()
+    {
+        return $this->hasMany(Rental::class);
+    }
+
+    public function getIsRentedAttribute()
+    {
+        return $this->rentals()->where('end_date', '>=', now()->startOfDay())->whereIn('status', ['pending', 'confirmed'])->exists();
+    }
 }
