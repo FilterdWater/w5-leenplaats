@@ -33,6 +33,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/js/components/ui/carousel";
+import { API_BASE_URL } from "@/js/config";
 
 export function Advertisement() {
   const { id } = useParams<{ id: string }>();
@@ -113,7 +114,7 @@ export function Advertisement() {
         return;
       }
 
-      const response = await fetch("http://localhost:80/api/rentals", {
+      const response = await fetch(`${API_BASE_URL}/api/rentals`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

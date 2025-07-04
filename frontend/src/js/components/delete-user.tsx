@@ -23,6 +23,7 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/js/components/ui/dialog";
+import { API_BASE_URL } from "../config";
 
 import { HeadingSmall } from "@/js/components/heading-small";
 import { toast } from "sonner";
@@ -52,7 +53,7 @@ export function DeleteUser() {
 
   const onSubmit = async (values: FormValues) => {
     try {
-      const response = await fetch("http://localhost:80/api/profile/delete", {
+      const response = await fetch(`${API_BASE_URL}/api/profile/delete`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -112,7 +113,10 @@ export function DeleteUser() {
             </DialogDescription>
 
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
                 <FormField
                   control={form.control}
                   name="password"

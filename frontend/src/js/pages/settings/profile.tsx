@@ -20,6 +20,7 @@ import { DeleteUser } from "@/js/components/delete-user";
 import { type BreadcrumbItem } from "@/js/types/app-layout";
 import { useDocumentTitle } from "@/js/hooks/use-document-title";
 import { useUser } from "@/js/context/UserContext";
+import { API_BASE_URL } from "@/js/config";
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -77,8 +78,7 @@ export function Profile() {
     setRecentlySuccessful(false);
 
     try {
-      // Replace this with actual API call
-      const response = await fetch("http://localhost:80/api/profile/update", {
+      const response = await fetch(`${API_BASE_URL}/api/profile/update`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

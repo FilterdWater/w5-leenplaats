@@ -1,5 +1,6 @@
 import type { LoginForm } from "@/js/schemas/loginSchema";
 import type { UseFormReturn } from "react-hook-form";
+import { API_BASE_URL } from "../config";
 
 export async function handleLogin(
   values: LoginForm,
@@ -11,7 +12,7 @@ export async function handleLogin(
   setIsLoading(true);
 
   try {
-    const response = await fetch("http://localhost:80/api/login", {
+    const response = await fetch(`${API_BASE_URL}/api/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),

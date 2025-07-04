@@ -1,16 +1,17 @@
 import type { ApiResponse } from "@/js/types/api-response";
 import type { User, UserDTO } from "@/js/models/user";
+import { API_BASE_URL } from "../config";
 
 // GET: all User
 export async function fetchUsers(): Promise<User[]> {
-  const res = await fetch("http://localhost:80/api/users");
+  const res = await fetch(`${API_BASE_URL}/api/users`);
 
   return await res.json();
 }
 
 // GET: User with id
 export async function fetchUser(id: number): Promise<ApiResponse> {
-  const res = await fetch(`http://localhost:80/api/users/${id}`);
+  const res = await fetch(`${API_BASE_URL}/api/users/${id}`);
 
   return await res.json();
 }
@@ -18,7 +19,7 @@ export async function fetchUser(id: number): Promise<ApiResponse> {
 // Get: Check User Email exist
 export async function checkEmailExists(email: string): Promise<boolean> {
   const res = await fetch(
-    `http://localhost:80/api/users/email/${encodeURIComponent(email)}`
+    `${API_BASE_URL}/api/users/email/${encodeURIComponent(email)}`
   );
 
   if (!res.ok) {
@@ -41,7 +42,7 @@ export async function createUser(user: UserDTO): Promise<ApiResponse> {
   }
 
   try {
-    const response = await fetch("http://localhost:80/api/users", {
+    const response = await fetch(`${API_BASE_URL}/api/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

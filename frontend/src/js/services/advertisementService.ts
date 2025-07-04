@@ -3,10 +3,11 @@ import type {
   AdvertisementDTO,
 } from "@/js/models/advertisement";
 import type { ApiResponse } from "../types/api-response";
+import { API_BASE_URL } from "../config";
 
 // GET: alle advertenties ophalen
 export async function fetchAdvertisements(): Promise<Advertisement[]> {
-  const res = await fetch("http://localhost:80/api/advertisements");
+  const res = await fetch(`${API_BASE_URL}/api/advertisements`);
 
   return await res.json();
 }
@@ -16,7 +17,7 @@ export async function createAdvertisement(
   ad: AdvertisementDTO
 ): Promise<ApiResponse> {
   try {
-    const response = await fetch("http://localhost:80/api/advertisements", {
+    const response = await fetch(`${API_BASE_URL}/api/advertisements`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

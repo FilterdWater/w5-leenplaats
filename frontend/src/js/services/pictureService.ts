@@ -1,11 +1,12 @@
 import type { Picture, PictureDTO } from "../models/picture";
 import type { ApiResponse } from "../types/api-response";
+import { API_BASE_URL } from "../config";
 
 // GET: Pictures by Advertisement_Id
 export async function fetchPicturesByAdvertisementId(
   id: number
 ): Promise<ApiResponse> {
-  const response = await fetch(`http://localhost:80/api/pictures/${id}`);
+  const response = await fetch(`${API_BASE_URL}/api/pictures/${id}`);
 
   const data = await response.json();
 
@@ -15,7 +16,7 @@ export async function fetchPicturesByAdvertisementId(
 // POST: new Picture
 export async function storePictures(pics: PictureDTO[]): Promise<ApiResponse> {
   try {
-    const response = await fetch("http://localhost:80/api/pictures", {
+    const response = await fetch(`${API_BASE_URL}/api/pictures`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
