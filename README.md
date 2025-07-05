@@ -32,7 +32,7 @@ Before you begin, ensure you have the following installed on your system
       ./backend/vendor/bin/sail artisan key:generate
       ```
    2. ```
-      ./backend/vendor/bin/sail artisan migrate
+      ./backend/vendor/bin/sail artisan migrate --seed
       ```
 
 4. **Start working!**
