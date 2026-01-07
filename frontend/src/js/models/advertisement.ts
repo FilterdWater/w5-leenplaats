@@ -16,6 +16,7 @@ export interface Advertisement {
   updated_at: string;
   categories?: Category[];
   pictures?: Picture[];
+  is_rented?: boolean;
 }
 
 export interface AdvertisementDTO {

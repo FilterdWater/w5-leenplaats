@@ -3,7 +3,7 @@ import type { CreateAdvertisementForm } from "../schemas/createAdvertisementSche
 import type { AdvertisementDTO } from "../models/advertisement";
 import { createAdvertisement } from "../services/advertisementService";
 import type { User } from "@/js/models/user";
-import type { Picture, PictureDTO } from "@/js/models/picture";
+import type { Picture } from "@/js/models/picture";
 import { storePictures } from "../services/pictureService";
 
 function fileToBase64(file: File): Promise<string> {

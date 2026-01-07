@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { User } from "@/js/models/user";
+import { API_BASE_URL } from "../config";
 
 interface UserContextType {
   user: User | null;
@@ -21,7 +22,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (token) {
       try {
-        const response = await fetch("http://localhost:80/api/user", {
+        const response = await fetch(`${API_BASE_URL}/api/user`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",

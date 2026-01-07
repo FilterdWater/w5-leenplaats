@@ -24,7 +24,12 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'first_name' => fake()->firstName(),
+            'last_name' => fake()->lastName(),
+            'address' => fake()->streetAddress(),
+            'zip_code' => fake()->postcode(),
+            'city' => fake()->city(),
+            'profile_picture' => $this->generatePlaceholderImage(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
@@ -40,5 +45,27 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    private function generatePlaceholderImage(): string
+    {
+        $width = 100;
+        $height = 100;
+        $image = imagecreatetruecolor($width, $height);
+
+        // Generate random color
+        $red = rand(0, 255);
+        $green = rand(0, 255);
+        $blue = rand(0, 255);
+        $color = imagecolorallocate($image, $red, $green, $blue);
+
+        imagefill($image, 0, 0, $color);
+
+        ob_start();
+        imagepng($image);
+        $imageData = ob_get_clean();
+        imagedestroy($image);
+
+        return 'data:image/png;base64,' . base64_encode($imageData);
     }
 }

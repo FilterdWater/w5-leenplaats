@@ -10,7 +10,10 @@ class BookmarkController extends Controller
 {
     public function index()
     {
-        return Auth::user()->bookmarks()->with(['pictures', 'user'])->get();
+        return Auth::user()->bookmarks()->with(['pictures', 'user', 'rentals'])->get()->map(function ($ad) {
+            $ad->append('is_rented');
+            return $ad;
+        });
     }
 
     public function store(Request $request)

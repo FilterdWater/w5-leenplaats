@@ -61,6 +61,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/bookmark', [BookmarkController::class, 'index']);
     Route::post('/bookmark', [BookmarkController::class, 'store']);
     Route::delete('/bookmark', [BookmarkController::class, 'destroy']);
+
+    // Rental
+    Route::post('/rentals', [\App\Http\Controllers\RentalController::class, 'store']);
 });
 
 // Postal

@@ -12,7 +12,10 @@ class AdvertisementController extends Controller
 {
     public function index()
     {
-        $ads = Advertisement::with(['categories', 'pictures', 'user'])->get();
+        $ads = Advertisement::with(['categories', 'pictures', 'user', 'rentals'])->get()->map(function ($ad) {
+            $ad->append('is_rented');
+            return $ad;
+        });
         return response()->json($ads);
     }
 
@@ -43,7 +46,8 @@ class AdvertisementController extends Controller
 
     public function show($id)
     {
-        $ad = Advertisement::with(['categories', 'pictures'])->findOrFail($id);
+        $ad = Advertisement::with(['categories', 'pictures', 'rentals'])->findOrFail($id);
+        $ad->append('is_rented');
         return response()->json($ad);
     }
 

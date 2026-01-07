@@ -18,6 +18,7 @@ import { SettingsLayout } from "@/js/layouts/settings/layout";
 import { HeadingSmall } from "@/js/components/heading-small";
 import { type BreadcrumbItem } from "@/js/types/app-layout";
 import { useDocumentTitle } from "@/js/hooks/use-document-title";
+import { API_BASE_URL } from "@/js/config";
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -66,8 +67,7 @@ export function Password() {
     setRecentlySuccessful(false);
 
     try {
-      // Replace this with actual API call
-      const response = await fetch("http://localhost:80/api/password/update", {
+      const response = await fetch(`${API_BASE_URL}/api/password/update`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

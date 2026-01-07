@@ -6,7 +6,15 @@ import type { BreadcrumbItem } from "@/js/types/app-layout";
 import { Heading } from "@/js/components/heading";
 import { Button } from "@/js/components/ui/button";
 import { BookmarkButton } from "@/js/components/bookmark-button";
-import { ArrowLeft, Calendar, MapPin, Tag } from "lucide-react";
+import { ArrowLeft, Calendar as CalendarIcon, MapPin, Tag } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/js/components/ui/popover";
+import { Calendar } from "@/js/components/ui/calendar";
+import { format } from "date-fns";
+import { cn } from "@/js/lib/utils";
 import { Badge } from "@/js/components/ui/badge";
 import { fetchAdvertisements } from "@/js/services/advertisementService";
 import { fetchUsers } from "@/js/services/userService";
@@ -25,6 +33,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/js/components/ui/carousel";
+import { API_BASE_URL } from "@/js/config";
 
 export function Advertisement() {
   const { id } = useParams<{ id: string }>();
@@ -36,6 +45,8 @@ export function Advertisement() {
   const [user, setUser] = useState<User | null>(null);
   const [isAvailable, setIsAvailable] = useState<boolean>(true);
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
   useEffect(() => {
     if (!advertisementId) return;
@@ -50,7 +61,7 @@ export function Advertisement() {
           const users = await fetchUsers();
           const matchedUser = users.find((u) => u.id === ad.user_id);
           setUser(matchedUser || null);
-          setIsAvailable(true);
+          setIsAvailable(!ad.is_rented);
         }
 
         // **Fetch bookmark en check bookmark status**
@@ -87,6 +98,47 @@ export function Advertisement() {
     } catch (error) {
       console.error("Fout bij bookmark:", error);
       setIsBookmarked(!newState); // revert state bij error
+    }
+  };
+
+  const handleRent = async () => {
+    if (!advertisementId || !startDate || !endDate) {
+      toast.error("Please select both start and end dates.");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("You need to be logged in to rent an advertisement.");
+        return;
+      }
+
+      const response = await fetch(`${API_BASE_URL}/api/rentals`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          advertisement_id: advertisementId,
+          start_date: format(startDate, "yyyy-MM-dd"),
+          end_date: format(endDate, "yyyy-MM-dd"),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success(data.message);
+        // Optionally, update UI to reflect the rental (e.g., disable rent button)
+        setIsAvailable(false); // Mark as unavailable after successful rental
+      } else {
+        toast.error(data.message || "Failed to submit rental request.");
+      }
+    } catch (error) {
+      console.error("Error submitting rental request:", error);
+      toast.error("An unexpected error occurred.");
     }
   };
 
@@ -209,7 +261,7 @@ export function Advertisement() {
 
             {/* Created date */}
             <div className="text-sm text-muted-foreground flex items-center">
-              <Calendar className="w-4 h-4 mr-2" />
+              <CalendarIcon className="w-4 h-4 mr-2" />
               Geplaatst op{" "}
               {new Date(advertisement.created_at).toLocaleDateString("nl-NL")}
             </div>
@@ -217,8 +269,58 @@ export function Advertisement() {
             {/* Rent / Bookmark section */}
             <div className="space-y-3">
               {isAvailable ? (
-                <div className="flex gap-3">
-                  <Button className="flex-1" size="lg">
+                <div className="flex flex-col gap-3">
+                  <div className="flex gap-3">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(!startDate && "text-muted-foreground")}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {startDate ? (
+                            format(startDate, "PPP")
+                          ) : (
+                            <span>Start Date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={startDate}
+                          onSelect={setStartDate}
+                        />
+                      </PopoverContent>
+                    </Popover>
+
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(!endDate && "text-muted-foreground")}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {endDate ? (
+                            format(endDate, "PPP")
+                          ) : (
+                            <span>End Date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={endDate}
+                          onSelect={setEndDate}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <Button
+                    onClick={handleRent}
+                    disabled={!startDate || !endDate}
+                  >
                     Huren
                   </Button>
                   {localStorage.getItem("token") && (

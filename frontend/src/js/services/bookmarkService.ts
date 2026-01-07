@@ -1,9 +1,10 @@
 import type { Advertisement } from "../models/advertisement";
 import type { ApiResponse } from "../types/api-response";
+import { API_BASE_URL } from "../config";
 
 // GET: All Advertisements in bookmark
 export async function fetchBookmarks(): Promise<ApiResponse> {
-  const response = await fetch(`http://localhost:80/api/bookmark`, {
+  const response = await fetch(`${API_BASE_URL}/api/bookmark`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
@@ -17,7 +18,7 @@ export async function fetchBookmarks(): Promise<ApiResponse> {
 // POST: Add Advertisements to bookmark
 export async function addToBookmark(id: number): Promise<ApiResponse> {
   try {
-    const response = await fetch(`http://localhost:80/api/bookmark`, {
+    const response = await fetch(`${API_BASE_URL}/api/bookmark`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -51,7 +52,7 @@ export async function addToBookmark(id: number): Promise<ApiResponse> {
 // DELETE: Remove Advertisement from bookmark
 export async function removeFromBookmark(id: number): Promise<ApiResponse> {
   try {
-    const response = await fetch(`http://localhost:80/api/bookmark`, {
+    const response = await fetch(`${API_BASE_URL}/api/bookmark`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

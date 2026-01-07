@@ -188,7 +188,7 @@ if [ "$BACKEND_NOT_SETUP" = true ]; then
             -v "$PWD":/app \
             -w /app \
             --user "$(id -u):$(id -g)" \
-            composer install; then
+            composer:2.7 install; then
             echo "ERROR: composer install failed"
             exit 1
         fi
