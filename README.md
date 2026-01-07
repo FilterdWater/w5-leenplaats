@@ -60,3 +60,8 @@ chmod +x setup-and-start.sh stop-and-cleanup.sh
 - Always work from the project root directory
 - The backend uses Laravel Sail, so all standard Sail commands are available
 - The Project was setup using WSL2 + Docker on Windows, but should work on other platforms because of Docker
+
+## Screenshots
+
+![Landing page](./leenplaats-landing-page.png "Landing page")
+![Local dev setup](./leenplaats-local-dev-setup.png "Local dev setup")
